@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agrocom — Redesign Preview v2 · The Market Square</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ClashDisplay — only the Medium cut exists in assets/. font-synthesis is disabled everywhere,
+     so nothing fakes a bold from it; Semibold/Bold must be licensed before build. */
+  @font-face { font-family:'Clash'; src:url('assets/ClashDisplay-Medium.ttf') format('truetype'); font-weight:500; font-display:swap; }
+
+  :root{
+    --fd:'Clash','Inter',sans-serif;
+    /* ---- The Market Square · screen tokens (LIGHT) ---- */
+    --canvas:#F3F0E7;          /* warm off-white board canvas — sunlight surface */
+    --paper:#FFFDF7;           /* card / band paper */
+    --line:#E3DECE;            /* hairlines */
+    --ink:#1A1F1A;             /* near-black body ink, >=16px */
+    --ink2:#3C443C;            /* secondary ink */
+    --meta:#5C665C;            /* metadata floor — never lighter */
+    --green:#16A34A;           /* THE green. Action, links, verified, success. */
+    --green-tint:#E4F3E9;      /* tint of the one green for fills */
+    --green-line:#BEE0CA;
+    --gold:#D9A521;            /* merit + money-advantage only */
+    --gold-ink:#8A660E;
+    --gold-tint:#F9F0D6;
+    --gold-line:#EAD79E;
+    --sky:#2E80B0;             /* weather only */
+    --sky-tint:#E7F2F9;
+    --sky-line:#C2DDEC;
+    --earth:#8A5A2B;           /* support: produce, avatars, photo stand-ins */
+    --earth-tint:#F2E9DB;
+    --red:#C22B1E; --red-tint:#F9E7E3;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-font-smoothing:antialiased}
+  body{font-family:'Inter',-apple-system,sans-serif;background:#151109;color:#E9E3D2}
+  .d{font-family:var(--fd);font-weight:500;font-synthesis:none;letter-spacing:.1px}
+
+  /* ================= BOARD CHROME (dark — soil, not slate) ================= */
+  .bwrap{max-width:1500px;margin:0 auto;padding:0 48px}
+  .board-header{padding:64px 0 20px;border-bottom:1px solid #2B2415}
+  .bh-top{display:flex;align-items:center;gap:16px}
+  .bh-top img{width:54px;height:54px;object-fit:contain;background:#FFFDF7;border-radius:14px;padding:6px}
+  .bh-top h1{font-family:var(--fd);font-weight:500;font-synthesis:none;font-size:34px;color:#FBF7EB;line-height:1.15}
+  .bh-top h1 em{font-style:normal;color:#3ECC72}
+  .bh-top .vtag{margin-left:auto;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#D9A521;border:1px solid #4A3B14;border-radius:999px;padding:8px 16px;white-space:nowrap}
+  .bh-thesis{margin-top:18px;max-width:900px;color:#B9B098;font-size:15px;line-height:1.7}
+  .bh-thesis b{color:#EDE7D6}
+  .bh-thesis a{color:#57C97B;text-decoration:none;font-weight:600}
+  .bh-thesis a:hover{text-decoration:underline}
+
+  .bh-grid{display:flex;gap:20px;flex-wrap:wrap;margin-top:30px}
+  .bh-card{background:#1D1810;border:1px solid #2E2716;border-radius:16px;padding:18px 20px}
+  .bh-card h4{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8C815F;margin-bottom:12px}
+  .swrow{display:flex}
+  .sw{width:46px;height:46px;border-radius:11px;margin-right:-7px;border:2px solid #1D1810;position:relative}
+  .swlab{font-size:11.5px;color:#8C815F;margin-top:10px;line-height:1.6}
+  .swlab b{color:#CFC7AD;font-weight:600}
+  .tdemo .t1{font-family:var(--fd);font-weight:500;font-synthesis:none;font-size:21px;color:#FBF7EB}
+  .tdemo .t2{font-size:14px;font-weight:600;color:#CFC7AD;margin-top:4px}
+  .tdemo .t3{font-size:12.5px;color:#8C815F;margin-top:4px}
+  .rules{max-width:420px}
+  .rules li{font-size:12.5px;color:#B9B098;line-height:1.7;list-style:none;padding-left:16px;position:relative}
+  .rules li::before{content:"—";position:absolute;left:0;color:#3ECC72}
+  .rules li b{color:#EDE7D6}
+
+  /* signature element mini-demos */
+  .sigs{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px;padding-bottom:34px}
+  .sig{background:#1D1810;border:1px solid #2E2716;border-radius:16px;padding:14px;width:212px}
+  .sig .demo{background:var(--paper);border-radius:11px;padding:12px;min-height:76px;display:flex;flex-direction:column;justify-content:center;color:var(--ink)}
+  .sig .cap{font-size:11.5px;color:#8C815F;margin-top:10px;line-height:1.5}
+  .sig .cap b{color:#CFC7AD;font-weight:600}
+
+  /* flow sections */
+  .flow{padding:52px 0 10px}
+  .flow>h2{font-family:var(--fd);font-weight:500;font-synthesis:none;font-size:24px;color:#FBF7EB}
+  .flow>h2 .no{color:#D9A521;margin-right:10px}
+  .flow .intro{color:#B9B098;font-size:14px;line-height:1.7;margin:10px 0 6px;max-width:880px}
+  .flow .intro a{color:#57C97B;text-decoration:none;font-weight:600}
+  .flow .intro a:hover{text-decoration:underline}
+  .flow .devi{font-size:13px;color:#B08A2A;margin:4px 0 30px;max-width:880px}
+  .flow .devi b{color:#E5C05C;font-weight:700}
+  .frames{display:flex;gap:38px;flex-wrap:wrap;align-items:flex-start}
+  .frame-label{text-align:center;margin-top:14px;font-size:13px;color:#8C815F;font-weight:500}
+  .frame-label b{color:#CFC7AD;font-weight:600}
+
+  footer{border-top:1px solid #2B2415;margin-top:56px;padding:26px 0 90px;color:#8C815F;font-size:13px;line-height:1.8}
+  footer a{color:#57C97B;text-decoration:none;font-weight:600}
+  footer a:hover{text-decoration:underline}
+  footer b{color:#CFC7AD}
+
+  /* ================= PHONE FRAME ================= */
+  .phone{width:375px;height:812px;background:#000;border-radius:54px;padding:10px;box-shadow:0 26px 70px rgba(0,0,0,.65),0 0 0 1px #33291A;position:relative;flex-shrink:0}
+  .screen{width:100%;height:100%;border-radius:44px;overflow:hidden;position:relative;background:var(--canvas);color:var(--ink);display:flex;flex-direction:column;font-size:16px;line-height:1.45}
+  .island{position:absolute;top:22px;left:50%;transform:translateX(-50%);width:110px;height:32px;background:#000;border-radius:20px;z-index:60}
+  .homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;border-radius:3px;background:rgba(0,0,0,.85);z-index:60}
+  .homebar.lt{background:rgba(255,255,255,.9)}
+  .sb{height:56px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 6px;font-size:14px;font-weight:700}
+  .sb .sbr{display:flex;gap:6px;align-items:flex-end;padding-bottom:2px}
+  .sb .bars{display:flex;gap:2px;align-items:flex-end}
+  .sb .bars i{width:3px;background:currentColor;border-radius:1px;display:block}
+  .sb .bat{width:24px;height:12px;border:1.5px solid currentColor;border-radius:4px;position:relative;opacity:.9}
+  .sb .bat::after{content:"";position:absolute;inset:2px 7px 2px 2px;background:currentColor;border-radius:1.5px}
+
+  /* ================= SCREEN SYSTEM — The Market Square ================= */
+  .r{display:flex;align-items:center;gap:12px}
+  .m{color:var(--meta)}
+  .m13{font-size:13px;color:var(--meta);font-weight:500}
+  .band{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 18px}
+  .band+.band{border-top:0}
+  .bgap{height:8px;flex-shrink:0}
+  .ic{width:22px;height:22px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .ic.s{width:18px;height:18px}
+  .ic.l{width:26px;height:26px}
+  .rbtn{width:44px;height:44px;border-radius:14px;background:var(--paper);border:1.5px solid var(--line);display:grid;place-items:center;flex-shrink:0;position:relative}
+  .ava{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;font-size:15px;flex-shrink:0}
+
+  /* price lockup — signature */
+  .pl{display:flex;align-items:baseline;gap:7px}
+  .pl .n{font-family:var(--fd);font-weight:500;font-synthesis:none;font-variant-numeric:tabular-nums;letter-spacing:.1px}
+  .uchip{font-size:12px;font-weight:700;color:var(--ink2);border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:2.5px 9px;white-space:nowrap;align-self:center}
+
+  /* word chips — states in words, never icons */
+  .wc{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4.5px 10px;border-radius:8px;white-space:nowrap}
+  .wc-g{background:var(--green-tint);color:#0E7A36;border:1px solid var(--green-line)}
+  .wc-gold{background:var(--gold-tint);color:var(--gold-ink);border:1px solid var(--gold-line)}
+  .wc-grey{background:#EEEBE0;color:var(--meta);border:1px solid var(--line)}
+  .wc-sky{background:var(--sky-tint);color:#1F6390;border:1px solid var(--sky-line)}
+
+  /* buttons — consequence in the label, >=48px */
+  .b{display:flex;align-items:center;justify-content:center;gap:9px;height:54px;border-radius:14px;font-family:var(--fd);font-weight:500;font-synthesis:none;font-size:17.5px;letter-spacing:.2px}
+  .b.big{height:58px;font-size:18.5px}
+  .b.pri{background:var(--green);color:#fff}
+  .b.out{background:var(--paper);border:2px solid var(--green);color:var(--green)}
+  .b.plain{background:var(--paper);border:1.5px solid var(--line);color:var(--ink)}
+  .b.sm{height:44px;font-size:15px;border-radius:12px;padding:0 16px}
+  .b sub{font-family:'Inter';font-weight:600;font-size:11px;vertical-align:baseline}
+
+  /* chips */
+  .chip{height:40px;display:inline-flex;align-items:center;gap:7px;padding:0 16px;border-radius:999px;background:var(--paper);border:1.5px solid var(--line);font-size:14px;font-weight:600;color:var(--ink2);white-space:nowrap}
+  .chip.on{background:var(--green);border-color:var(--green);color:#fff}
+  .chiprow{display:flex;gap:8px;overflow:hidden}
+
+  /* labeled action pills — words over icons */
+  .act{display:flex;gap:8px;margin-top:12px}
+  .apill{height:48px;padding:0 15px;border:1.5px solid var(--line);border-radius:999px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--ink2);background:var(--paper)}
+
+  .inp{height:52px;border-radius:14px;background:var(--paper);border:1.5px solid var(--line);display:flex;align-items:center;padding:0 15px;gap:10px;color:var(--meta);font-size:15.5px;font-weight:500}
+  .inp.fil{color:var(--ink);font-weight:600}
+
+  .card{background:var(--paper);border:1.5px solid var(--line);border-radius:16px}
+
+  /* tab bar */
+  .nav{flex-shrink:0;background:var(--paper);border-top:1.5px solid var(--line);display:flex;padding:10px 8px 24px;z-index:50;align-items:flex-start}
+  .nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--meta);text-decoration:none}
+  .nav a.on{color:var(--green)}
+  .nav .fab{width:56px;height:56px;border-radius:18px;background:var(--green);color:#fff;display:grid;place-items:center;margin-top:-24px;border:4px solid var(--paper);box-shadow:0 8px 18px rgba(22,163,74,.35)}
+  .nav .fabwrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--meta)}
+
+  /* photo stand-ins — photography is evidence; these gradients suggest heaps, sacks, stalls */
+  .ph{position:relative;overflow:hidden;background:#6B4415}
+  .ph::before{content:"";position:absolute;inset:0;background:radial-gradient(130% 95% at 50% 25%, transparent 52%, rgba(26,16,5,.38) 100%)}
+  .ph::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(112deg, rgba(255,246,220,.06) 0 2px, rgba(20,12,3,.05) 2px 5px, transparent 5px 10px)}
+  .ph-maize{background:linear-gradient(180deg,#8A7A52 0%,rgba(138,122,82,0) 32%),radial-gradient(125% 90% at 50% 102%,#E8B94F 0%,#C08A2E 40%,#8F5F1E 72%,#6B4415 100%)}
+  .ph-maize2{background:linear-gradient(180deg,#7E6C44 0%,rgba(126,108,68,0) 30%),radial-gradient(110% 85% at 38% 100%,#DBA83F 0%,#B07C26 45%,#7C4F16 100%)}
+  .ph-tomato{background:linear-gradient(180deg,#77503A 0%,rgba(119,80,58,0) 30%),radial-gradient(120% 90% at 50% 102%,#E05A38 0%,#B23A22 45%,#6E2114 100%)}
+  .ph-yam{background:linear-gradient(180deg,#5C4A30 0%,rgba(92,74,48,0) 32%),radial-gradient(120% 92% at 55% 102%,#C99A5E 0%,#8A5F30 48%,#4C3216 100%)}
+  .ph-leaf{background:linear-gradient(180deg,#3E5A33 0%,rgba(62,90,51,0) 30%),radial-gradient(120% 90% at 45% 102%,#63A852 0%,#357730 48%,#1C4A21 100%)}
+  .ph-sack{background:linear-gradient(180deg,rgba(40,26,10,.45) 0%,rgba(40,26,10,0) 26%),repeating-linear-gradient(92deg,#C9A574 0 36px,#B28C58 36px 44px,#C9A574 44px 78px,#A9834F 78px 84px),#B28C58}
+  .ph-egg{background:linear-gradient(180deg,#6E5A3C 0%,rgba(110,90,60,0) 30%),radial-gradient(120% 90% at 50% 102%,#EADFC2 0%,#C8AC7E 50%,#8A6E44 100%)}
+  .ph-market{background:linear-gradient(180deg,#4E4026 0%,rgba(78,64,38,0) 34%),radial-gradient(80% 60% at 24% 96%,#5FA84F 0%,rgba(95,168,79,0) 60%),radial-gradient(90% 70% at 78% 100%,#D89A3A 0%,#9A6524 55%,#5E3D16 100%)}
+  .scrimchip{position:absolute;display:inline-flex;align-items:center;gap:6px;background:rgba(26,18,7,.82);color:#FFF9EC;font-size:12px;font-weight:700;padding:6px 11px;border-radius:9px;z-index:3}
+  .phlab{position:absolute;left:0;right:0;bottom:0;background:rgba(26,18,7,.82);color:#FFF9EC;font-size:13px;font-weight:700;padding:8px 12px;z-index:3}
+
+  /* poll bars */
+  .popt{position:relative;height:52px;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;display:flex;align-items:center;padding:0 15px;margin-top:8px;font-weight:600;font-size:15px;background:var(--paper)}
+  .popt .fill{position:absolute;top:0;bottom:0;left:0;background:var(--green-tint)}
+  .popt.lead{border:2px solid var(--green)}
+  .popt span{position:relative;z-index:2}
+  .popt .pct{margin-left:auto;font-family:var(--fd);font-weight:500;font-synthesis:none;font-size:17px}
+
+  /* chat bubbles */
+  .bub{max-width:84%;border-radius:16px;padding:11px 14px;font-size:15.5px;line-height:1.45}
+  .bub.in{background:var(--paper);border:1px solid var(--line);border-top-left-radius:6px;align-self:flex-start}
+  .bub.out{background:#DDF2E4;border:1px solid var(--green-line);border-top-right-radius:6px;align-self:flex-end}
+  .sysrow{align-self:center;font-size:12px;font-weight:600;color:var(--meta);background:#ECE8DB;border-radius:999px;padding:5px 13px}
+
+  /* vertical tracker */
+  .tl{position:relative;padding-left:36px}
+  .tl::before{content:"";position:absolute;left:11px;top:10px;bottom:14px;width:2px;background:var(--line)}
+  .ts{position:relative;padding-bottom:20px}
+  .ts .nd{position:absolute;left:-36px;top:0;width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;z-index:2}
+  .ts .nd.now{background:var(--paper);border:3px solid var(--green);color:var(--green)}
+  .ts .nd.todo{background:var(--paper);border:2px solid var(--line)}
+  .ts b{font-size:15.5px;display:block}
+  .ts .m13{margin-top:2px}
+
+  /* keypad */
+  .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .key{height:56px;border-radius:14px;background:var(--paper);border:1.5px solid var(--line);display:grid;place-items:center;font-family:var(--fd);font-weight:500;font-synthesis:none;font-size:22px}
+
+  /* voice waveform */
+  .wave{display:flex;gap:2.5px;align-items:center;flex:1;height:30px}
+  .wave i{width:3px;border-radius:2px;background:currentColor;display:block}
+
+  /* segmented toggle */
+  .seg{display:flex;background:#ECE8DB;border-radius:14px;padding:4px;gap:4px}
+  .seg div{flex:1;height:46px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14.5px;font-weight:700;color:var(--meta);line-height:1.2}
+  .seg .on{background:var(--paper);color:var(--ink);box-shadow:0 2px 6px rgba(30,24,10,.12)}
+  .seg small{font-size:10.5px;font-weight:700;color:var(--gold-ink)}
+
+  /* switches */
+  .sw2{width:52px;height:31px;border-radius:16px;background:#D8D3C2;position:relative;flex-shrink:0}
+  .sw2::after{content:"";position:absolute;top:3px;left:3px;width:25px;height:25px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .sw2.on{background:var(--green)}
+  .sw2.on::after{left:auto;right:3px}
+
+  .lrow{display:flex;align-items:center;gap:14px;padding:15px 0}
+  .lrow+.lrow{border-top:1px solid var(--line)}
+  .lrow b{flex:1;font-size:15.5px;font-weight:600}
+  .lrow small{display:block;font-size:13px;color:var(--meta);font-weight:500;margin-top:2px}
+
+  .sticky{margin-top:auto;background:var(--paper);border-top:1.5px solid var(--line);padding:12px 18px 34px;flex-shrink:0}
+  .shead{display:flex;align-items:center;gap:12px;padding:8px 18px 12px}
+  .shead h1{font-family:var(--fd);font-weight:500;font-synthesis:none;font-size:23px;flex:1}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-chevd" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-chevr" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16 16"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 004 0"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="3"/><path d="M8.5 7L10 4h4l1.5 3"/><circle cx="12" cy="13.5" r="3.5"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><circle cx="8.5" cy="10" r="1.8"/><path d="M3.5 17l5-5 4 4 3.5-3.5 4.5 4.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.5-7-11.5a7 7 0 0114 0C19 14.5 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7"/></symbol>
+  <symbol id="i-checks" viewBox="0 0 24 24"><path d="M2.5 12.5l4.5 4.5L15.5 8.5M9.5 15l2 2L21 8"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.8 6.4 20l1.3-6.2L3 9.5l6.3-.7L12 3z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></symbol>
+  <symbol id="i-shop" viewBox="0 0 24 24"><path d="M4 7h16l-1.5 13.5h-13L4 7z"/><path d="M8.5 10V6a3.5 3.5 0 017 0v4"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2.3-2.7A8 8 0 1121 12z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.6-3.5 4.2-5 7.5-5s5.9 1.5 7.5 5"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 19.5c1.3-3 3.6-4.3 6.5-4.3s5.2 1.3 6.5 4.3"/><path d="M16 5.6a3.5 3.5 0 010 5.8M18.5 15.4c1.6.7 2.6 2 3 4.1"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5L8 5.5z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a12.5 12.5 0 005 5L15 13l5 2v4a2 2 0 01-2.2 2A17 17 0 013 6.2 2 2 0 015 4z"/></symbol>
+  <symbol id="i-truck" viewBox="0 0 24 24"><path d="M2.5 6h11v11h-11zM13.5 10h4.5l3 3.5V17h-7.5"/><circle cx="6.5" cy="18.5" r="1.8"/><circle cx="17" cy="18.5" r="1.8"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18"/><circle cx="16.5" cy="15" r="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12h2.5M19 12h2.5M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19"/></symbol>
+  <symbol id="i-cloudsun" viewBox="0 0 24 24"><path d="M15.5 5.5a4 4 0 013.9 3.1M20.5 10.5h1M17.5 2.5v1M21.7 4.8l-.9.9"/><path d="M7 19.5a4.2 4.2 0 01-.4-8.4A5.5 5.5 0 0117 12.7a3.5 3.5 0 01-.7 6.8H7z"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18.5a4.5 4.5 0 01-.4-9A6 6 0 0118.3 11a3.8 3.8 0 01-.8 7.5H7z"/></symbol>
+  <symbol id="i-rain" viewBox="0 0 24 24"><path d="M7 15.5a4.5 4.5 0 01-.4-9A6 6 0 0118.3 8a3.8 3.8 0 01-.8 7.5H7z"/><path d="M8.5 18.5l-1 2.5M13 18.5l-1 2.5M17.5 18.5l-1 2.5"/></symbol>
+  <symbol id="i-storm" viewBox="0 0 24 24"><path d="M7 14.5a4.5 4.5 0 01-.4-9A6 6 0 0118.3 7a3.8 3.8 0 01-.8 7.5H7z"/><path d="M12.5 14l-2.5 4h3l-2 4"/></symbol>
+  <symbol id="i-haze" viewBox="0 0 24 24"><path d="M12 4.5a4.5 4.5 0 014.5 4.5"/><path d="M3 12h18M5 15.5h14M7 19h10"/></symbol>
+  <symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 9h11a2.8 2.8 0 10-2.8-2.8M3 13.5h15.5a2.8 2.8 0 11-2.8 2.8M3 18h7"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8l1.2 2.7 2.9-.6 1 2.8 2.9.7-.7 2.8 2 2.2-2 2.2.7 2.8-2.9.7-1 2.8-2.9-.6L12 21.2l-1.2-2.9-2.9.6-1-2.8-2.9-.7.7-2.8-2-2.2 2-2.2-.7-2.8 2.9-.7 1-2.8 2.9.6L12 2.8z" opacity=".0"/><path d="M4.5 12a7.5 7.5 0 01.6-3l-1.6-2 2.1-2.1 2 1.6a7.5 7.5 0 013-.6L12 3.5l1.4 2.4a7.5 7.5 0 013 .6l2-1.6 2.1 2.1-1.6 2a7.5 7.5 0 01.6 3l2.4 1.4-2.4 1.4a7.5 7.5 0 01-.6 3l1.6 2-2.1 2.1-2-1.6a7.5 7.5 0 01-3 .6L12 20.5l-1.4-2.4a7.5 7.5 0 01-3-.6l-2 1.6-2.1-2.1 1.6-2a7.5 7.5 0 01-.6-3z" opacity=".0"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2M6.3 6.3l1.4 1.4M16.3 16.3l1.7 1.7M17.7 6.3l-1.4 1.4M7.7 16.3L6 18"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 4.5h6a3 3 0 013 3v12a2.5 2.5 0 00-2.5-2.5H5V4.5z"/><path d="M19 4.5h-5" opacity="0"/><path d="M19 17h-5.5" opacity="0"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3M12 3L8 7m4-4l4 4"/><path d="M5 12v8.5h14V12"/></symbol>
+  <symbol id="i-poll" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 12V3.5H12L20.5 12 12 20.5 3.5 12z"/><circle cx="8" cy="8" r="1.6"/></symbol>
+  <symbol id="i-bkmk" viewBox="0 0 24 24"><path d="M6.5 3.5h11V21L12 16.8 6.5 21V3.5z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c-2.6 2.5-3.8 5.4-3.8 8.5s1.2 6 3.8 8.5c2.6-2.5 3.8-5.4 3.8-8.5s-1.2-6-3.8-8.5z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 2.8V6.5M16 2.8V6.5"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-2-1.4L14 21l-2-1.4L10 21l-2-1.4L6 21V3z"/><path d="M9 8h6M9 12h6"/></symbol>
+</svg>
+
+<!-- =============================== BOARD HEADER =============================== -->
+<div class="bwrap">
+<header class="board-header">
+  <div class="bh-top">
+    <img src="assets/logo-mark.png" alt="Agrocom">
+    <h1>Agrocom — Redesign Preview v2 <em>· The Market Square</em></h1>
+    <span class="vtag">v2 · research-driven</span>
+  </div>
+  <p class="bh-thesis"><b>The Market Square</b> — the authority of a village noticeboard, the warmth of a real market. Screens are <b>light, warm and sunlight-legible</b> (this is the light board of the four projects; only the chrome around the phones is dark): near-black text at 16px and up, one confident green, ₦ figures set in ClashDisplay at display size, photography as evidence, and words wherever a tap has consequences. Rebuilt from the completed Mobbin pass — synthesis at <a href="research/index.html">research/index.html</a>. v1 shared a generic card grammar with three sibling boards; v2 is a different architecture: edge-to-edge noticeboard bands instead of floating cards, price-first lockups, chunky labeled pills, drawn 2px icons, zero emoji.</p>
+
+  <div class="bh-grid">
+    <div class="bh-card">
+      <h4>Tokens</h4>
+      <div class="swrow">
+        <div class="sw" style="background:#1A1F1A"></div>
+        <div class="sw" style="background:#F3F0E7"></div>
+        <div class="sw" style="background:#FFFDF7"></div>
+        <div class="sw" style="background:#16A34A"></div>
+        <div class="sw" style="background:#D9A521"></div>
+        <div class="sw" style="background:#2E80B0"></div>
+        <div class="sw" style="background:#8A5A2B"></div>
+      </div>
+      <div class="swlab"><b>ink #1A1F1A</b> · canvas #F3F0E7 · paper #FFFDF7<br><b>ONE green #16A34A</b> (action / links / verified / success)<br><b>gold #D9A521</b> — merit &amp; savings only · <b>sky #2E80B0</b> — weather only · earth #8A5A2B support</div>
+    </div>
+    <div class="bh-card tdemo">
+      <h4>Type</h4>
+      <div class="t1">ClashDisplay — headlines, ₦45,000, verdicts</div>
+      <div class="t2">Inter 500–700 — body ≥16px, tabular numerals in ledgers</div>
+      <div class="t3">Meta ≥13px, never lighter than grey-600 · only the Medium cut ships in assets/, so bold synthesis is off (font-synthesis:none) — license Semibold/Bold before build.</div>
+    </div>
+    <div class="bh-card rules">
+      <h4>Hard rules</h4>
+      <ul>
+        <li><b>One green.</b> Every CTA, chip, FAB and Join pill is #16A34A.</li>
+        <li>Every ₦ is the real glyph (U+20A6) with thousands separators.</li>
+        <li><b>Words over icons</b> for consequences — states as word chips, the cost in the button label.</li>
+        <li>≥48px targets · solid scrims under text-on-photo · place-first context lines everywhere.</li>
+        <li>Not a fintech dashboard. Not dark immersive. Not dating.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sigs">
+    <div class="sig">
+      <div class="demo">
+        <div class="pl"><span class="n d" style="font-size:26px">₦45,000</span><span class="uchip">/ bag</span></div>
+        <div style="font-size:12px;color:#5C665C;font-weight:600;margin-top:4px">Maize, dried — 100kg</div>
+      </div>
+      <div class="cap"><b>Unit-price lockup</b> — ₦ in ClashDisplay + unit chip, identical on cards, product pages, offers, receipts.</div>
+    </div>
+    <div class="sig">
+      <div class="demo">
+        <div style="font-size:11px;font-weight:700;color:#5C665C">MUSA OFFERED</div>
+        <div class="d" style="font-size:17px;margin:2px 0 6px">₦45,000/bag × 10</div>
+        <div style="display:flex;gap:6px"><span style="background:#16A34A;color:#fff;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700">Accept</span><span style="border:1.5px solid #16A34A;color:#16A34A;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700">Counter</span></div>
+      </div>
+      <div class="cap"><b>Structured offer bubbles</b> — the chat thread doubles as the contract.</div>
+    </div>
+    <div class="sig">
+      <div class="demo"><div class="d" style="font-size:15.5px;line-height:1.35">Rain likely from 2 PM — finish spraying before noon.</div></div>
+      <div class="cap"><b>The verdict sentence</b> — weather and market screens lead with one plain-language line.</div>
+    </div>
+    <div class="sig">
+      <div class="demo"><div style="display:flex;gap:14px;justify-content:center;color:#1A1F1A"><svg class="ic l"><use href="#i-sun"/></svg><svg class="ic l"><use href="#i-rain"/></svg><svg class="ic l" style="color:#8A5A2B"><use href="#i-haze"/></svg><svg class="ic l"><use href="#i-wind"/></svg></div></div>
+      <div class="cap"><b>Drawn 2px icon set</b> — incl. agri glyphs (harmattan haze, wind). No emoji anywhere.</div>
+    </div>
+    <div class="sig">
+      <div class="demo"><span class="wc wc-gold" style="align-self:flex-start;font-size:13px;padding:7px 13px"><svg class="ic" style="width:14px;height:14px;fill:#D9A521;stroke:#D9A521"><use href="#i-star"/></svg>Trusted trader · 214 deals</span></div>
+      <div class="cap"><b>Gold merit stamps</b> — best answer, trusted trader, savings. The only decoration in the system.</div>
+    </div>
+  </div>
+</header>
+
+<!-- =============================== 01 · FEED =============================== -->
+<section class="flow">
+  <h2 class="d"><span class="no">01</span>Feed — the noticeboard, not the stage</h2>
+  <p class="intro">From <a href="research/social-feed.html">research/social-feed.html</a>: Nextdoor-style cards with a place-first context line ("who → post type · where · when"), four structured payloads inside one card shell (photo, poll, market listing, event), labeled chunky actions in words, a camera-first composer sheet, and group pages that put trust metadata before content with one full-width Join.</p>
+  <p class="devi"><b>Intentional deviation:</b> light-first, dark mode later — sunlight legibility is the job, so v1's dark token-swap frame is deliberately dropped from the system.</p>
+  <div class="frames">
+
+    <!-- F1 · Home feed -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:8px 18px 12px">
+            <div class="r">
+              <div class="r" style="gap:7px;flex:1"><span class="d" style="font-size:24px">Kano</span><svg class="ic" style="color:var(--green)"><use href="#i-chevd"/></svg></div>
+              <div class="rbtn"><svg class="ic"><use href="#i-search"/></svg></div>
+              <div class="rbtn"><svg class="ic"><use href="#i-bell"/></svg><span style="position:absolute;top:9px;right:9px;width:8px;height:8px;border-radius:4px;background:var(--red);border:1.5px solid var(--paper)"></span></div>
+            </div>
+            <div class="chiprow" style="margin-top:12px">
+              <span class="chip on">All</span><span class="chip">My groups</span><span class="chip">Market prices</span><span class="chip">Questions</span><span class="chip">Events</span>
+            </div>
+          </div>
+          <div class="band" style="padding:12px 18px">
+            <div class="r"><div class="ava" style="background:var(--green)">MD</div><div class="inp" style="flex:1;height:48px">Share with Kano farmers…</div><div class="rbtn"><svg class="ic" style="color:var(--green)"><use href="#i-camera"/></svg></div></div>
+          </div>
+          <div class="bgap"></div>
+          <!-- poll post -->
+          <div class="band">
+            <div class="r" style="gap:10px;align-items:flex-start">
+              <div class="ava" style="background:var(--earth)">AG</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:15.5px"><b>Adamu Garba</b> <span style="color:var(--green);font-weight:700;font-size:13.5px">→ Question</span></div>
+                <div class="m13">Ungogo, Kano · Maize Growers · 2h</div>
+              </div>
+              <svg class="ic m"><use href="#i-more"/></svg>
+            </div>
+            <div class="d" style="font-size:19px;line-height:1.3;margin-top:11px">Which maize seed did well for you this season?</div>
+            <div class="popt lead"><span class="fill" style="width:48%"></span><span>SC 651</span><span class="pct">48%</span></div>
+            <div class="popt"><span class="fill" style="width:33%"></span><span>Oba Super 2</span><span class="pct">33%</span></div>
+            <div class="popt"><span class="fill" style="width:19%"></span><span>Sammaz 15</span><span class="pct">19%</span></div>
+            <div class="m13" style="margin-top:9px">126 votes · 2 days left</div>
+            <div class="act">
+              <span class="apill"><svg class="ic s"><use href="#i-check"/></svg>Helpful · 24</span>
+              <span class="apill"><svg class="ic s"><use href="#i-chat"/></svg>Comment · 18</span>
+              <span class="apill"><svg class="ic s"><use href="#i-share"/></svg>Share</span>
+            </div>
+          </div>
+          <div class="bgap"></div>
+          <!-- market-listing post (crops at screen edge) -->
+          <div class="band" style="border-bottom:0">
+            <div class="r" style="gap:10px;align-items:flex-start">
+              <div class="ava" style="background:#5E7A3A">MN</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:15.5px"><b>Mama Nkechi</b> <span style="color:var(--green);font-weight:700;font-size:13.5px">→ For sale</span></div>
+                <div class="m13">Yankaba Market, Kano · 4h</div>
+              </div>
+              <svg class="ic m"><use href="#i-more"/></svg>
+            </div>
+            <div style="font-size:16px;margin-top:10px">Dried maize, moisture-tested and bagged. 15 bags left before Wednesday market.</div>
+            <div class="card r" style="margin-top:11px;padding:10px;gap:12px">
+              <div class="ph ph-maize" style="width:74px;height:74px;border-radius:11px;flex-shrink:0"></div>
+              <div style="flex:1;min-width:0">
+                <div class="pl"><span class="n d" style="font-size:21px">₦25,500</span><span class="uchip">/ bag</span></div>
+                <div style="font-size:14.5px;font-weight:600;margin-top:2px">Maize, dried — 100kg bag</div>
+                <div class="m13" style="margin-top:2px"><span style="color:var(--green);font-weight:700">✓ Verified</span> · 12 km away</div>
+              </div>
+              <svg class="ic m"><use href="#i-chevr"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="nav">
+          <a class="on"><svg class="ic"><use href="#i-home"/></svg>Home</a>
+          <a><svg class="ic"><use href="#i-shop"/></svg>Shop</a>
+          <span class="fabwrap"><span class="fab"><svg class="ic l"><use href="#i-plus"/></svg></span>Post</span>
+          <a><svg class="ic"><use href="#i-chat"/></svg>Chat</a>
+          <a><svg class="ic"><use href="#i-user"/></svg>Profile</a>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Feed</b> — region switcher · poll + market-listing payloads · labeled actions</div>
+    </div>
+
+    <!-- F2 · Composer sheet -->
+    <div>
+      <div class="phone"><div class="screen" style="background:#57524A"><div class="island"></div>
+        <div style="height:90px;flex-shrink:0"></div>
+        <div style="flex:1;background:var(--canvas);border-radius:22px 22px 0 0;overflow:hidden;display:flex;flex-direction:column">
+          <div style="width:44px;height:5px;border-radius:3px;background:#CFC9B8;margin:10px auto 0"></div>
+          <div class="r" style="padding:10px 18px 12px">
+            <span style="font-size:16px;font-weight:600;color:var(--ink2)">Cancel</span>
+            <span class="d" style="flex:1;text-align:center;font-size:18px">New post</span>
+            <span class="b pri sm" style="padding:0 22px;height:42px">Post</span>
+          </div>
+          <div class="band" style="padding:12px 18px">
+            <div class="r"><div class="ava" style="background:var(--green)">MD</div>
+              <span class="chip" style="height:38px"><svg class="ic s"><use href="#i-users"/></svg>To: Kano · Maize Growers<svg class="ic s"><use href="#i-chevd"/></svg></span>
+            </div>
+            <div style="font-size:18px;line-height:1.5;margin-top:14px">Harvested 40 baskets this morning. Who has cold-chain transport to Abuja this week?</div>
+            <div class="ph ph-tomato" style="height:210px;border-radius:16px;margin-top:14px">
+              <span class="scrimchip" style="left:10px;bottom:10px">Cover</span>
+              <span style="position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:3"><svg class="ic s"><use href="#i-x"/></svg></span>
+            </div>
+          </div>
+          <div class="bgap"></div>
+          <div class="band">
+            <div class="m13" style="font-weight:700;margin-bottom:10px">ADD TO YOUR POST — CAMERA FIRST</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+              <span class="b plain sm" style="justify-content:flex-start;background:var(--green-tint);border-color:var(--green-line);color:#0E7A36;font-family:'Inter';font-weight:700;font-size:14.5px"><svg class="ic s"><use href="#i-camera"/></svg>Camera</span>
+              <span class="b plain sm" style="justify-content:flex-start;font-family:'Inter';font-weight:700;font-size:14.5px"><svg class="ic s"><use href="#i-image"/></svg>Photo</span>
+              <span class="b plain sm" style="justify-content:flex-start;font-family:'Inter';font-weight:700;font-size:14.5px"><svg class="ic s"><use href="#i-poll"/></svg>Poll</span>
+              <span class="b plain sm" style="justify-content:flex-start;font-family:'Inter';font-weight:700;font-size:14.5px"><svg class="ic s"><use href="#i-tag"/></svg>Sell something</span>
+            </div>
+            <div class="r" style="margin-top:12px;gap:8px"><svg class="ic s" style="color:var(--green)"><use href="#i-pin"/></svg><span style="font-size:14.5px;font-weight:600">Yankaba Market, Kano</span><span class="m13" style="margin-left:auto">Change</span></div>
+          </div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Composer sheet</b> — camera before gallery · audience + place rows</div>
+    </div>
+
+    <!-- F3 · Group page -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="ph ph-market" style="height:196px;flex-shrink:0">
+          <span style="position:absolute;top:58px;left:16px;width:44px;height:44px;border-radius:14px;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:4"><svg class="ic"><use href="#i-back"/></svg></span>
+          <span class="scrimchip" style="left:16px;bottom:12px;background:rgba(26,18,7,.85);color:#F5D77E"><svg class="ic" style="width:14px;height:14px;fill:#D9A521;stroke:#D9A521"><use href="#i-star"/></svg>Group of the month</span>
+        </div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:16px 18px">
+            <div class="d" style="font-size:24px;line-height:1.2">Tomato Growers of Kano</div>
+            <div class="m13" style="margin-top:5px;font-size:14px">5,120 members · Kano · Active today</div>
+            <div class="b pri big" style="margin-top:14px">Join group — free</div>
+          </div>
+          <div class="bgap"></div>
+          <div class="band">
+            <div class="m13" style="font-weight:700;margin-bottom:7px">ABOUT</div>
+            <div style="font-size:15.5px;line-height:1.5">For tomato farmers and buyers around Kano. Anyone in Kano State can join. Sale days Wednesday &amp; Saturday at Yankaba Market.</div>
+            <div class="chiprow" style="margin-top:12px;flex-wrap:wrap"><span class="chip" style="height:36px;font-size:13px">Tomatoes</span><span class="chip" style="height:36px;font-size:13px">Market prices</span><span class="chip" style="height:36px;font-size:13px">Transport</span><span class="chip" style="height:36px;font-size:13px">Inputs</span></div>
+          </div>
+          <div class="bgap"></div>
+          <div class="band" style="border-bottom:0">
+            <div class="m13" style="font-weight:700;margin-bottom:8px">PINNED · MARKET PULSE</div>
+            <div class="card" style="padding:13px 15px;background:var(--green-tint);border-color:var(--green-line)">
+              <div class="d" style="font-size:17px;line-height:1.35">Tomato baskets trading ₦12,000–₦14,500 this week at Yankaba.</div>
+              <div class="m13" style="margin-top:5px">Agrocom market data · updated today</div>
+            </div>
+            <div class="r" style="gap:10px;margin-top:13px;align-items:flex-start">
+              <div class="ava" style="width:38px;height:38px;font-size:13px;background:#2E5E7A">NO</div>
+              <div style="flex:1"><div style="font-size:15px"><b>Ngozi Okeke</b></div><div class="m13">Jos Road, Kano · 1h</div></div>
+            </div>
+            <div style="font-size:15.5px;margin-top:8px">Basket price don rise small — buyers dey rush before the rain…</div>
+          </div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Group page</b> — trust before content · full-width Join · gold merit stamp</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =============================== 02 · MARKETPLACE =============================== -->
+<section class="flow">
+  <h2 class="d"><span class="no">02</span>Marketplace — the photo is the card, the price is the headline</h2>
+  <p class="intro">From <a href="research/marketplace.html">research/marketplace.html</a>: a 2-col grid where the photo carries the card and the ₦ figure in ClashDisplay is the biggest text (price before title, Facebook Marketplace's economy), photographed category tiles instead of icon taxonomies (Karrot), location + recency + verification as the trust line, and a ruthless photo-first 3-step sell flow with live market-price hints.</p>
+  <p class="devi"><b>Intentional deviation:</b> units, not SKUs — per bag / kg / crate / paint bucket is a first-class field on every card, sell form and price; no reference app prices this way.</p>
+  <div class="frames">
+
+    <!-- F4 · Shop home -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:8px 18px 12px">
+            <div class="r"><span class="d" style="font-size:24px;flex:1">Shop</span><span class="chip" style="height:38px"><svg class="ic s" style="color:var(--green)"><use href="#i-pin"/></svg>Yankaba<svg class="ic s"><use href="#i-chevd"/></svg></span></div>
+            <div class="inp" style="margin-top:11px"><svg class="ic s"><use href="#i-search"/></svg>Search produce, sellers…<svg class="ic s" style="margin-left:auto;color:var(--green)"><use href="#i-camera"/></svg></div>
+            <div class="r" style="gap:9px;margin-top:10px">
+              <span class="b pri sm" style="flex:1"><svg class="ic s"><use href="#i-camera"/></svg>Sell</span>
+              <span class="b plain sm" style="flex:1;font-family:'Inter';font-weight:700;font-size:14.5px">Categories</span>
+            </div>
+          </div>
+          <div class="band" style="padding:12px 18px 14px">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px">
+              <div><div class="ph ph-maize" style="height:74px;border-radius:12px"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Grains</div></div>
+              <div><div class="ph ph-yam" style="height:74px;border-radius:12px"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Tubers</div></div>
+              <div><div class="ph ph-leaf" style="height:74px;border-radius:12px"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Vegetables</div></div>
+              <div><div class="ph ph-egg" style="height:74px;border-radius:12px"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Poultry</div></div>
+            </div>
+          </div>
+          <div class="bgap"></div>
+          <div class="band" style="border-bottom:0;flex:1">
+            <div class="r" style="margin-bottom:11px"><b style="font-size:16.5px;flex:1">Near you today</b><span class="m13">Within 25 km</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px">
+              <div>
+                <div class="ph ph-maize" style="height:138px;border-radius:14px"><span class="scrimchip" style="right:8px;top:8px;font-size:11px;padding:4px 8px">2h</span></div>
+                <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦25,500</span><span class="uchip">/ bag</span></div>
+                <div style="font-size:14.5px;font-weight:600;margin-top:2px">Maize, dried — 100kg</div>
+                <div class="m13" style="margin-top:2px"><span style="color:var(--green);font-weight:700">✓ Verified</span> · 12 km</div>
+              </div>
+              <div>
+                <div class="ph ph-tomato" style="height:138px;border-radius:14px"><span class="scrimchip" style="right:8px;top:8px;font-size:11px;padding:4px 8px">1h</span></div>
+                <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦13,500</span><span class="uchip">/ basket</span></div>
+                <div style="font-size:14.5px;font-weight:600;margin-top:2px">Tomatoes, fresh Roma</div>
+                <div class="m13" style="margin-top:2px">Yankaba · 3 km</div>
+              </div>
+              <div>
+                <div class="ph ph-yam" style="height:138px;border-radius:14px"></div>
+                <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦850</span><span class="uchip">/ tuber</span></div>
+                <div style="font-size:14.5px;font-weight:600;margin-top:2px">Yam, Puna — big size</div>
+              </div>
+              <div>
+                <div class="ph ph-sack" style="height:138px;border-radius:14px"></div>
+                <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦62,000</span><span class="uchip">/ 50kg sack</span></div>
+                <div style="font-size:14.5px;font-weight:600;margin-top:2px">Rice, local — parboiled</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="nav">
+          <a><svg class="ic"><use href="#i-home"/></svg>Home</a>
+          <a class="on"><svg class="ic"><use href="#i-shop"/></svg>Shop</a>
+          <span class="fabwrap"><span class="fab"><svg class="ic l"><use href="#i-plus"/></svg></span>Post</span>
+          <a><svg class="ic"><use href="#i-chat"/></svg>Chat</a>
+          <a><svg class="ic"><use href="#i-user"/></svg>Profile</a>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Shop home</b> — Sell pill · photographed category tiles · price-first grid</div>
+    </div>
+
+    <!-- F5 · Sell step 1 -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div class="shead"><div class="rbtn"><svg class="ic"><use href="#i-x"/></svg></div><h1>Sell</h1><span style="font-size:14.5px;font-weight:700;color:var(--green)">Save draft</span></div>
+        <div style="display:flex;gap:6px;padding:0 18px 14px">
+          <div style="flex:1;height:6px;border-radius:3px;background:var(--green)"></div>
+          <div style="flex:1;height:6px;border-radius:3px;background:var(--line)"></div>
+          <div style="flex:1;height:6px;border-radius:3px;background:var(--line)"></div>
+        </div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 18px">
+          <div class="d" style="font-size:21px">Step 1 of 3 — Photos</div>
+          <div class="card r" style="margin-top:12px;padding:12px 14px;background:var(--green-tint);border-color:var(--green-line);gap:10px">
+            <svg class="ic" style="color:#0E7A36"><use href="#i-camera"/></svg>
+            <span style="font-size:14.5px;font-weight:600;color:#0E7A36;line-height:1.4">Shoot in daylight. Show the heap or the open sack.</span>
+          </div>
+          <div class="ph ph-maize" style="height:250px;border-radius:16px;margin-top:14px">
+            <span class="scrimchip" style="left:10px;bottom:10px">Cover</span>
+            <span style="position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:3"><svg class="ic s"><use href="#i-x"/></svg></span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px">
+            <div class="ph ph-maize2" style="height:96px;border-radius:13px"></div>
+            <div class="ph ph-sack" style="height:96px;border-radius:13px"></div>
+            <div style="height:96px;border-radius:13px;border:2px dashed var(--green);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--green);font-size:13px;font-weight:700"><svg class="ic"><use href="#i-plus"/></svg>Add</div>
+          </div>
+          <div class="m13" style="margin-top:10px">Up to 8 photos · first photo is your cover · drag to reorder</div>
+        </div>
+        <div class="sticky"><div class="b pri big">Next — Details</div></div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Sell 1/3 — Photos</b> — camera opens first · daylight tip · cover slot</div>
+    </div>
+
+    <!-- F6 · Sell step 3 -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div class="shead"><div class="rbtn"><svg class="ic"><use href="#i-back"/></svg></div><h1>Sell</h1><span style="font-size:14.5px;font-weight:700;color:var(--green)">Save draft</span></div>
+        <div style="display:flex;gap:6px;padding:0 18px 14px">
+          <div style="flex:1;height:6px;border-radius:3px;background:var(--green)"></div>
+          <div style="flex:1;height:6px;border-radius:3px;background:var(--green)"></div>
+          <div style="flex:1;height:6px;border-radius:3px;background:var(--green)"></div>
+        </div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 18px">
+          <div class="d" style="font-size:21px">Step 3 of 3 — Price</div>
+          <div class="card" style="margin-top:12px;padding:16px;border-width:2px;border-color:var(--green)">
+            <div class="m13" style="font-weight:700">YOUR PRICE</div>
+            <div class="r" style="gap:10px;margin-top:4px">
+              <span class="d" style="font-size:40px;font-variant-numeric:tabular-nums">₦45,000</span>
+              <span style="width:2px;height:36px;background:var(--green);border-radius:1px"></span>
+            </div>
+          </div>
+          <div class="chiprow" style="margin-top:11px"><span class="chip on" style="height:38px">/ bag</span><span class="chip" style="height:38px">/ kg</span><span class="chip" style="height:38px">/ crate</span><span class="chip" style="height:38px">/ basket</span><span class="chip" style="height:38px">/ paint bucket</span></div>
+          <div class="r" style="margin-top:13px;gap:10px">
+            <div style="flex:1"><div class="m13" style="font-weight:700;margin-bottom:6px">QUANTITY AVAILABLE</div><div class="inp fil">15 bags</div></div>
+          </div>
+          <div class="card" style="margin-top:12px;padding:4px 15px">
+            <div class="r" style="padding:12px 0"><span style="flex:1;font-size:15.5px;font-weight:600">Negotiable — buyers can make offers</span><span class="sw2 on"></span></div>
+            <div class="r" style="padding:12px 0;border-top:1px solid var(--line)"><span style="flex:1;font-size:15.5px;font-weight:600">Give away free</span><span class="sw2"></span></div>
+          </div>
+          <div class="card" style="margin-top:12px;padding:13px 15px;background:var(--green-tint);border-color:var(--green-line)">
+            <div class="d" style="font-size:16.5px;line-height:1.35">Maize is trading ₦42,000–₦48,000 / bag near you this week.</div>
+            <div class="m13" style="margin-top:4px">Market pulse · Kano · your price sits in range</div>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="b pri big">Post listing</div>
+          <div class="m13" style="text-align:center;margin-top:9px">After posting: share to WhatsApp in one tap</div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Sell 3/3 — Price</b> — giant ₦ input · unit chips · market-price hint</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =============================== 03 · PRODUCT & CHECKOUT =============================== -->
+<section class="flow">
+  <h2 class="d"><span class="no">03</span>Product &amp; checkout — numbers are the interface</h2>
+  <p class="intro">From <a href="research/product-checkout.html">research/product-checkout.html</a>: edge-to-edge gallery with counter, an agri trust block built on numbers (rating, completed orders, response time, distance, harvest date), a sticky Make offer + Buy dual CTA with the price inside the button and a unit stepper in the bar (Faire), an offer sheet with preset −% ₦ chips, fulfillment-first checkout, and a confirmation that is a tracker, not a receipt.</p>
+  <p class="devi"><b>Intentional deviations:</b> haggle-native pricing — "Negotiable" sits at parity with the price; and pay-on-delivery is a visible, unashamed payment tier with escrow reassurance, against the card-first consensus.</p>
+  <div class="frames">
+
+    <!-- F7 · Product page -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="ph ph-maize" style="height:252px;flex-shrink:0">
+          <span style="position:absolute;top:58px;left:16px;width:44px;height:44px;border-radius:14px;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:4"><svg class="ic"><use href="#i-back"/></svg></span>
+          <span style="position:absolute;top:58px;right:16px;width:44px;height:44px;border-radius:14px;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:4"><svg class="ic"><use href="#i-share"/></svg></span>
+          <span class="scrimchip" style="right:12px;bottom:12px">1 / 5</span>
+        </div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:12px 18px">
+            <div class="r" style="gap:8px;margin-bottom:10px">
+              <div class="ph ph-maize" style="width:52px;height:52px;border-radius:10px;border:2px solid var(--green)"></div>
+              <div class="ph ph-maize2" style="width:52px;height:52px;border-radius:10px"></div>
+              <div class="ph ph-sack" style="width:52px;height:52px;border-radius:10px"></div>
+              <div class="ph ph-market" style="width:52px;height:52px;border-radius:10px"></div>
+            </div>
+            <div class="d" style="font-size:21px;line-height:1.25">Maize, dried — 100kg bag</div>
+            <div class="r" style="gap:9px;margin-top:7px;flex-wrap:wrap">
+              <span class="pl"><span class="n d" style="font-size:30px">₦25,500</span><span class="uchip">/ bag</span></span>
+              <span class="wc wc-g">Negotiable</span>
+            </div>
+            <div class="m13" style="margin-top:4px">≈ ₦510 / kg · minimum order 2 bags</div>
+            <div class="r" style="gap:8px;margin-top:9px;flex-wrap:wrap">
+              <span class="wc wc-gold">Harvested 2 days ago</span>
+              <span class="wc wc-gold">5+ bags: ₦24,000 / bag</span>
+            </div>
+          </div>
+          <div class="bgap"></div>
+          <div class="band">
+            <div class="r" style="gap:12px">
+              <div class="ava" style="background:#5E7A3A;width:48px;height:48px">MN</div>
+              <div style="flex:1;min-width:0">
+                <div class="r" style="gap:7px"><b style="font-size:15.5px">Mama Nkechi</b><span class="wc wc-g">✓ Verified seller</span></div>
+                <div class="m13" style="margin-top:3px">★ 4.8 (214) · 312 orders · replies in ~30 min</div>
+                <div class="m13">Yankaba Market, Kano · 12 km away</div>
+              </div>
+              <span class="b out sm" style="font-family:'Inter';font-weight:700;font-size:13.5px;height:40px;padding:0 14px">Message</span>
+            </div>
+            <div class="r" style="gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+              <svg class="ic" style="color:var(--green)"><use href="#i-truck"/></svg>
+              <div style="flex:1;font-size:14.5px;font-weight:600">Delivery ₦1,500 — est. Tue 12 Aug<small style="display:block;font-size:13px;color:var(--meta);font-weight:500;margin-top:1px">Or free pickup at Yankaba Market</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="r" style="gap:10px;margin-bottom:10px">
+            <div class="card r" style="height:48px;padding:0 14px;gap:16px;border-radius:13px"><b class="d" style="font-size:18px;color:var(--meta)">−</b><b style="font-size:15px">2 bags</b><b class="d" style="font-size:18px;color:var(--green)">+</b></div>
+            <span class="m13" style="margin-left:auto">2 bags = <b style="color:var(--ink)">₦51,000</b></span>
+          </div>
+          <div class="r" style="gap:10px">
+            <div class="b out" style="flex:1">Make offer</div>
+            <div class="b pri" style="flex:1.2">Buy ₦51,000</div>
+          </div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Product page</b> — gallery · trust block · unit stepper · dual CTA with price in button</div>
+    </div>
+
+    <!-- F8 · Offer sheet -->
+    <div>
+      <div class="phone"><div class="screen" style="background:#57524A"><div class="island"></div>
+        <div style="height:118px;flex-shrink:0"></div>
+        <div style="flex:1;background:var(--canvas);border-radius:22px 22px 0 0;overflow:hidden;display:flex;flex-direction:column;padding:0 18px">
+          <div style="width:44px;height:5px;border-radius:3px;background:#CFC9B8;margin:10px auto 6px;flex-shrink:0"></div>
+          <div class="d" style="font-size:21px">Make an offer</div>
+          <div class="m13" style="margin-top:3px">Asking ₦25,500 / bag × 2 bags = ₦51,000</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px">
+            <div class="card" style="padding:11px 8px;text-align:center"><div class="m13" style="font-weight:700">−5%</div><div class="d" style="font-size:16px;margin-top:2px">₦48,450</div></div>
+            <div class="card" style="padding:11px 8px;text-align:center;border:2px solid var(--green);background:var(--green-tint);position:relative"><span class="wc wc-gold" style="position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-size:10px;padding:3px 8px">Recommended</span><div class="m13" style="font-weight:700">−10%</div><div class="d" style="font-size:16px;margin-top:2px">₦45,900</div></div>
+            <div class="card" style="padding:11px 8px;text-align:center"><div class="m13" style="font-weight:700">−15%</div><div class="d" style="font-size:16px;margin-top:2px">₦43,350</div></div>
+          </div>
+          <div class="inp fil" style="margin-top:11px;height:56px"><span class="d" style="font-size:22px">₦45,900</span><span class="m13" style="margin-left:auto">for 2 bags</span></div>
+          <div class="pad" style="margin-top:12px">
+            <div class="key">1</div><div class="key">2</div><div class="key">3</div>
+            <div class="key">4</div><div class="key">5</div><div class="key">6</div>
+            <div class="key">7</div><div class="key">8</div><div class="key">9</div>
+            <div class="key" style="border:0;background:none"></div><div class="key">0</div><div class="key" style="font-family:'Inter';font-size:15px;font-weight:700">⌫</div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:34px">
+            <div class="m13" style="text-align:center;margin-bottom:10px">An offer is not a payment. Mama Nkechi has 24 hours to respond.</div>
+            <div class="b pri big">Send ₦45,900 offer</div>
+          </div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Offer sheet</b> — −5/−10/−15% ₦ chips · consequence in the CTA label</div>
+    </div>
+
+    <!-- F9 · Checkout -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div class="shead"><div class="rbtn"><svg class="ic"><use href="#i-back"/></svg></div><h1>Checkout</h1><span style="width:44px"></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 18px">
+          <div class="seg">
+            <div class="on">Delivery</div>
+            <div>Pickup<small>save ₦1,500</small></div>
+          </div>
+          <div class="card" style="margin-top:12px;padding:13px 15px">
+            <div class="r" style="gap:10px"><svg class="ic" style="color:var(--green)"><use href="#i-pin"/></svg><b style="flex:1;font-size:15.5px">Sabon Gari, Zaria Road, Kano</b><span style="font-size:13.5px;font-weight:700;color:var(--green)">Change</span></div>
+            <div class="m13" style="margin:8px 0 0 32px">"Beside the blue kiosk after the junction"</div>
+            <div class="m13" style="margin:3px 0 0 32px">0803 555 0142</div>
+          </div>
+          <div class="m13" style="font-weight:700;margin:14px 0 8px">HOW YOU PAY</div>
+          <div class="card" style="padding:4px 15px">
+            <div class="r" style="padding:13px 0;gap:12px">
+              <span style="width:24px;height:24px;border-radius:50%;border:7px solid var(--green);flex-shrink:0"></span>
+              <div style="flex:1"><b style="font-size:15.5px">Pay online — transfer, card or USSD</b><small style="display:block;font-size:13px;color:var(--meta);font-weight:500;margin-top:2px">Money held until you confirm receipt</small></div>
+              <span class="wc wc-gold">In escrow</span>
+            </div>
+            <div class="r" style="padding:13px 0;gap:12px;border-top:1px solid var(--line)">
+              <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--line);flex-shrink:0"></span>
+              <div style="flex:1"><b style="font-size:15.5px">Pay on delivery</b><small style="display:block;font-size:13px;color:var(--meta);font-weight:500;margin-top:2px">Cash or transfer at hand-off · no extra fee</small></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:12px;padding:6px 15px">
+            <div class="r" style="padding:11px 0"><span style="flex:1;font-size:15px;font-weight:600">Maize, dried × 2 bags — offer accepted</span><b style="font-variant-numeric:tabular-nums">₦45,900</b></div>
+            <div class="r" style="padding:11px 0;border-top:1px solid var(--line)"><span style="flex:1;font-size:15px;font-weight:700;color:var(--gold-ink)">You negotiated ₦5,100 off</span><b style="color:var(--gold-ink);font-variant-numeric:tabular-nums">−₦5,100</b></div>
+            <div class="r" style="padding:11px 0;border-top:1px solid var(--line)"><span style="flex:1;font-size:15px;font-weight:600">Delivery</span><b style="font-variant-numeric:tabular-nums">₦1,500</b></div>
+            <div class="r" style="padding:12px 0;border-top:1.5px solid var(--ink)"><span style="flex:1;font-size:16px;font-weight:700">Total</span><span class="d" style="font-size:22px">₦47,400</span></div>
+          </div>
+        </div>
+        <div class="sticky"><div class="b pri big">Place order — ₦47,400</div></div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Checkout</b> — fulfilment first · POD visible · escrow in words · negotiated savings in gold</div>
+    </div>
+
+    <!-- F10 · Order tracker -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div style="background:var(--green);color:#fff;padding:58px 20px 18px;flex-shrink:0">
+          <div class="r" style="gap:8px">
+            <span style="background:rgba(255,255,255,.18);border-radius:8px;padding:4.5px 10px;font-size:12px;font-weight:700">Order #4821</span>
+            <span style="background:rgba(255,255,255,.18);border-radius:8px;padding:4.5px 10px;font-size:12px;font-weight:700">Paid — held in escrow</span>
+          </div>
+          <div class="d" style="font-size:27px;margin-top:12px">Arriving Tue, 12 Aug</div>
+          <div style="font-size:14.5px;opacity:.92;margin-top:3px">Maize, dried × 2 bags · ₦47,400 · Mama Nkechi</div>
+        </div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:18px 18px 0">
+          <div class="tl">
+            <div class="ts"><span class="nd"><svg class="ic s" style="width:13px;height:13px;stroke-width:3"><use href="#i-check"/></svg></span><b>Order confirmed</b><div class="m13">Sat 2 Aug · 9:41 AM</div></div>
+            <div class="ts"><span class="nd"><svg class="ic s" style="width:13px;height:13px;stroke-width:3"><use href="#i-check"/></svg></span><b>Mama Nkechi packed your bags</b><div class="m13">Sat 2 Aug · 11:05 AM</div></div>
+            <div class="ts"><span class="nd now"></span><b>On the way — GIG Logistics</b><div class="m13">Waybill 8841 · left Kano depot 1:20 PM</div></div>
+            <div class="ts" style="padding-bottom:6px"><span class="nd todo"></span><b style="color:var(--meta)">Delivered — you confirm receipt</b><div class="m13">This releases the money to the seller</div></div>
+          </div>
+          <div class="r" style="gap:10px;margin-top:8px">
+            <span class="b plain sm" style="flex:1;font-family:'Inter';font-weight:700;font-size:14.5px"><svg class="ic s"><use href="#i-phone"/></svg>Call rider</span>
+            <span class="b plain sm" style="flex:1;font-family:'Inter';font-weight:700;font-size:14.5px"><svg class="ic s"><use href="#i-chat"/></svg>Chat seller</span>
+          </div>
+          <div class="card" style="margin-top:12px;padding:13px 15px;background:var(--gold-tint);border-color:var(--gold-line)">
+            <div style="font-size:14.5px;font-weight:600;color:var(--gold-ink);line-height:1.45">₦47,400 stays safely in escrow until you tap Confirm receipt below.</div>
+          </div>
+        </div>
+        <div class="sticky"><div class="b pri big">Confirm receipt — release ₦47,400</div></div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Order tracker</b> — vertical timeline in plain sentences · Confirm receipt releases escrow</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =============================== 04 · CHAT =============================== -->
+<section class="flow">
+  <h2 class="d"><span class="no">04</span>Chat — trade chat is a negotiation with a subject</h2>
+  <p class="intro">From <a href="research/chat.html">research/chat.html</a>: WhatsApp grammar wholesale (zero learning curve is the feature), the produce card pinned like a contract header with deal chips beneath it, offers as stateful structured bubbles with Accept / Counter inline, system rows notarizing each step until the thread is the receipt, and seller quick replies above the composer.</p>
+  <p class="devi"><b>Intentional deviation:</b> voice notes oversized — consensus keeps the mic small; here voice is the primary literacy-neutral channel, so the mic, waveform and play targets are big, with transcription.</p>
+  <div class="frames">
+
+    <!-- F11 · Chat list -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:8px 18px 12px">
+            <div class="r"><span class="d" style="font-size:24px;flex:1">Chats</span><div class="rbtn"><svg class="ic"><use href="#i-search"/></svg></div></div>
+            <div class="chiprow" style="margin-top:12px"><span class="chip on">All</span><span class="chip">Unread</span><span class="chip">Buying</span><span class="chip">Selling</span></div>
+          </div>
+          <div class="band" style="flex:1;padding:2px 18px;border-bottom:0">
+            <div class="lrow">
+              <div class="ava" style="width:52px;height:52px;background:#5E7A3A">MN</div>
+              <b>Mama Nkechi<small><svg class="ic" style="width:15px;height:15px;color:var(--green);vertical-align:-3px;stroke-width:2.4"><use href="#i-checks"/></svg> You: Offered ₦45,900 for 2 bags</small></b>
+              <div style="text-align:right"><div class="m13">11:02</div><span class="wc wc-g" style="margin-top:4px">Accepted</span></div>
+            </div>
+            <div class="lrow">
+              <div class="ava" style="width:52px;height:52px;background:var(--earth)">AB</div>
+              <b>Alhaji Bala<small><svg class="ic" style="width:14px;height:14px;vertical-align:-2.5px"><use href="#i-mic"/></svg> Voice note · 0:42</small></b>
+              <div style="text-align:right"><div class="m13">10:48</div><span style="display:inline-flex;min-width:24px;height:24px;border-radius:12px;background:var(--green);color:#fff;font-size:12.5px;font-weight:700;align-items:center;justify-content:center;margin-top:4px;padding:0 7px">2</span></div>
+            </div>
+            <div class="lrow">
+              <div class="ava" style="width:52px;height:52px;background:#B0642A">RP</div>
+              <b>Rekiya Poultry<small>Countered — ₦4,500 / crate × 4</small></b>
+              <div style="text-align:right"><div class="m13">9:15</div><span class="wc wc-gold" style="margin-top:4px">Pending</span></div>
+            </div>
+            <div class="lrow">
+              <div class="ava" style="width:52px;height:52px;background:#2E5E7A">TG</div>
+              <b>Tomato Growers of Kano<small>Ngozi: Basket price don rise small…</small></b>
+              <div class="m13">Yesterday</div>
+            </div>
+            <div class="lrow">
+              <div class="ava" style="width:52px;height:52px;background:#55524A">GL</div>
+              <b>GIG Logistics<small>Waybill 8841 don leave Kano depot</small></b>
+              <div class="m13">Yesterday</div>
+            </div>
+          </div>
+        </div>
+        <div class="nav">
+          <a><svg class="ic"><use href="#i-home"/></svg>Home</a>
+          <a><svg class="ic"><use href="#i-shop"/></svg>Shop</a>
+          <span class="fabwrap"><span class="fab"><svg class="ic l"><use href="#i-plus"/></svg></span>Post</span>
+          <a class="on"><svg class="ic"><use href="#i-chat"/></svg>Chat</a>
+          <a><svg class="ic"><use href="#i-user"/></svg>Profile</a>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Chat list</b> — WhatsApp grammar · offer states visible from the list</div>
+    </div>
+
+    <!-- F12 · Conversation -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="band" style="border-top:0;padding:58px 16px 10px;flex-shrink:0">
+          <div class="r" style="gap:10px">
+            <svg class="ic"><use href="#i-back"/></svg>
+            <div class="ava" style="width:42px;height:42px;background:#5E7A3A;font-size:14px">MN</div>
+            <div style="flex:1;min-width:0"><b style="font-size:16px">Mama Nkechi</b><div class="m13"><span style="color:var(--green);font-weight:700">✓ Verified</span> · replies in ~10 min</div></div>
+            <svg class="ic"><use href="#i-phone"/></svg>
+          </div>
+        </div>
+        <!-- pinned produce contract card -->
+        <div class="band" style="padding:10px 16px;flex-shrink:0;box-shadow:0 4px 10px rgba(30,24,10,.06)">
+          <div class="r" style="gap:11px">
+            <div class="ph ph-maize" style="width:52px;height:52px;border-radius:10px"></div>
+            <div style="flex:1;min-width:0">
+              <b style="font-size:14.5px">Maize, dried — 100kg bag</b>
+              <div class="pl" style="margin-top:2px"><span class="n d" style="font-size:17px">₦25,500</span><span class="uchip" style="font-size:11px;padding:2px 7px">/ bag</span><span class="wc wc-g" style="font-size:11px;padding:3px 8px">In stock</span></div>
+            </div>
+            <span class="b pri sm" style="height:40px;padding:0 16px;font-size:14px">Buy</span>
+          </div>
+          <div class="chiprow" style="margin-top:9px"><span class="chip" style="height:34px;font-size:12.5px">Schedule pickup</span><span class="chip" style="height:34px;font-size:12.5px">Share location</span><span class="chip" style="height:34px;font-size:12.5px">Mark sold</span></div>
+        </div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:9px;padding:12px 14px 8px">
+          <span class="sysrow">Today</span>
+          <div class="bub in">Good maize, well dried. How much you fit pay for 2 bags?</div>
+          <!-- outgoing offer, superseded -->
+          <div class="bub out" style="max-width:88%">
+            <div style="font-size:11px;font-weight:700;color:var(--meta);letter-spacing:.04em">YOU OFFERED</div>
+            <div class="d" style="font-size:19px;margin-top:2px">₦43,350 for 2 bags</div>
+            <div class="r" style="gap:8px;margin-top:6px"><span class="m13">₦21,675 / bag</span><span class="wc wc-grey" style="margin-left:auto">Countered</span></div>
+          </div>
+          <!-- incoming counter with actions -->
+          <div class="bub in" style="max-width:88%;border-width:1.5px">
+            <div style="font-size:11px;font-weight:700;color:var(--meta);letter-spacing:.04em">MAMA NKECHI COUNTERED</div>
+            <div class="d" style="font-size:19px;margin-top:2px">₦45,900 for 2 bags</div>
+            <div class="m13" style="margin-top:2px">₦22,950 / bag · <span style="color:var(--gold-ink);font-weight:700">expires in 24 hours</span></div>
+            <div class="r" style="gap:8px;margin-top:9px">
+              <span class="b pri sm" style="flex:1.3;height:44px;font-size:14.5px">Accept ₦45,900</span>
+              <span class="b out sm" style="flex:1;height:44px;font-size:14.5px">Counter</span>
+            </div>
+          </div>
+          <span class="sysrow">✓ Deal agreed at ₦45,900 — pay from checkout</span>
+          <!-- oversized voice note -->
+          <div class="bub in" style="width:88%;max-width:88%">
+            <div class="r" style="gap:10px;color:var(--green)">
+              <span style="width:46px;height:46px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;flex-shrink:0"><svg class="ic"><use href="#i-play"/></svg></span>
+              <span class="wave"><i style="height:8px"></i><i style="height:16px"></i><i style="height:24px"></i><i style="height:14px"></i><i style="height:28px"></i><i style="height:18px"></i><i style="height:10px"></i><i style="height:22px"></i><i style="height:30px"></i><i style="height:16px"></i><i style="height:8px"></i><i style="height:20px"></i><i style="height:26px"></i><i style="height:12px"></i><i style="height:18px"></i><i style="height:24px"></i><i style="height:10px"></i><i style="height:14px"></i></span>
+              <b style="font-size:13.5px;color:var(--ink2)">0:42</b>
+            </div>
+            <div class="m13" style="margin-top:7px">"Come Yankaba before 2 o'clock make we weigh am…"</div>
+          </div>
+        </div>
+        <div style="flex-shrink:0;padding:0 14px 6px">
+          <div class="chiprow"><span class="chip" style="height:36px;font-size:13px">Still available?</span><span class="chip" style="height:36px;font-size:13px">Last price?</span><span class="chip" style="height:36px;font-size:13px">Send location</span></div>
+        </div>
+        <div class="r" style="flex-shrink:0;background:var(--paper);border-top:1.5px solid var(--line);padding:10px 14px 30px;gap:10px">
+          <svg class="ic" style="color:var(--meta)"><use href="#i-plus"/></svg>
+          <div class="inp" style="flex:1;height:48px;border-radius:24px">Message…</div>
+          <span style="width:50px;height:50px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;flex-shrink:0"><svg class="ic l"><use href="#i-mic"/></svg></span>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Conversation</b> — pinned contract card · structured offers · system rows · big voice note</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =============================== 05 · WALLET & WEATHER =============================== -->
+<section class="flow">
+  <h2 class="d"><span class="no">05</span>Wallet &amp; weather — instruments, not experiences</h2>
+  <p class="intro">From <a href="research/wallet-weather.html">research/wallet-weather.html</a>: the wallet is a market cashbox — one huge honest ₦ balance, exactly two verbs, and a running-balance ledger in plain language with escrow states as word chips; weather is a work tool — a one-sentence verdict first, a gold alert banner, an hourly precipitation rail with drawn 2px icons, and advisory chips computed for farm decisions, pinned to named plots.</p>
+  <p class="devi"><b>Intentional deviation:</b> two verbs, full stop — the super-app services-grid, promo-carousel and sparkline consensus is refused wholesale; nothing on the wallet reads as a neobank.</p>
+  <div class="frames">
+
+    <!-- F13 · Wallet -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div class="shead"><div class="rbtn"><svg class="ic"><use href="#i-back"/></svg></div><h1>Wallet</h1><span style="font-size:14.5px;font-weight:700;color:var(--green)">Receipts</span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 18px">
+          <div style="background:var(--green);border-radius:20px;padding:20px;color:#fff">
+            <div style="font-size:13px;font-weight:600;opacity:.9">Wallet balance</div>
+            <div class="d" style="font-size:46px;font-variant-numeric:tabular-nums;line-height:1.1;margin-top:2px">₦86,400</div>
+            <span style="display:inline-flex;background:rgba(255,255,255,.18);border-radius:9px;padding:5px 11px;font-size:12.5px;font-weight:700;margin-top:10px">₦47,400 held in escrow for order #4821</span>
+            <div class="r" style="gap:10px;margin-top:16px">
+              <span class="b sm" style="flex:1;height:52px;background:#fff;color:var(--green);font-size:16px">Add money</span>
+              <span class="b sm" style="flex:1;height:52px;background:#fff;color:var(--green);font-size:16px">Pay seller</span>
+            </div>
+          </div>
+          <div class="m13" style="font-weight:700;margin:16px 0 2px">TODAY</div>
+          <div>
+            <div class="lrow" style="align-items:flex-start">
+              <div style="flex:1"><b style="font-size:15px">Paid Mama Nkechi — maize, 2 bags</b><small>11:02 AM · Order #4821 · <u>Share receipt</u></small></div>
+              <div style="text-align:right"><b style="font-size:15.5px;font-variant-numeric:tabular-nums">−₦47,400</b><div style="margin-top:3px"><span class="wc wc-gold">In escrow</span></div><div class="m13" style="margin-top:4px">Balance ₦86,400</div></div>
+            </div>
+          </div>
+          <div class="m13" style="font-weight:700;margin:8px 0 2px">YESTERDAY</div>
+          <div>
+            <div class="lrow" style="align-items:flex-start;border-top:0">
+              <div style="flex:1"><b style="font-size:15px">Alhaji Bala paid you — eggs, 4 crates</b><small>4:12 PM · Order #4788</small></div>
+              <div style="text-align:right"><b style="font-size:15.5px;color:var(--green);font-variant-numeric:tabular-nums">+₦19,200</b><div style="margin-top:3px"><span class="wc wc-g">Released</span></div><div class="m13" style="margin-top:4px">Balance ₦133,800</div></div>
+            </div>
+            <div class="lrow" style="align-items:flex-start">
+              <div style="flex:1"><b style="font-size:15px">Added money — transfer from Wema</b><small>9:30 AM</small></div>
+              <div style="text-align:right"><b style="font-size:15.5px;color:var(--green);font-variant-numeric:tabular-nums">+₦30,000</b><div class="m13" style="margin-top:4px">Balance ₦114,600</div></div>
+            </div>
+          </div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Wallet</b> — cashbox: huge ₦, two verbs, running-balance ledger, escrow in words</div>
+    </div>
+
+    <!-- F14 · Pay seller -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div class="shead"><div class="rbtn"><svg class="ic"><use href="#i-back"/></svg></div><h1>Pay seller</h1><span style="width:44px"></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 18px">
+          <div style="text-align:center;padding:26px 0 10px">
+            <div class="d" style="font-size:52px;font-variant-numeric:tabular-nums;line-height:1.05">₦12,500</div>
+            <div class="m13" style="margin-top:8px">Balance after: ₦73,900 · free between Agrocom wallets</div>
+          </div>
+          <div style="flex:1"></div>
+          <div class="pad" style="margin-bottom:14px">
+            <div class="key">1</div><div class="key">2</div><div class="key">3</div>
+            <div class="key">4</div><div class="key">5</div><div class="key">6</div>
+            <div class="key">7</div><div class="key">8</div><div class="key">9</div>
+            <div class="key">00</div><div class="key">0</div><div class="key" style="font-family:'Inter';font-size:15px;font-weight:700">⌫</div>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="b pri big">Continue — ₦12,500</div>
+          <div class="m13" style="text-align:center;margin-top:9px">Next: choose who to pay, then one confirm screen with the fee in naira</div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Pay seller</b> — amount-first keypad · fee spelled out before confirm</div>
+    </div>
+
+    <!-- F15 · Weather -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div style="background:var(--sky-tint);border-bottom:1.5px solid var(--sky-line);padding:58px 18px 16px;flex-shrink:0">
+          <div class="r">
+            <div class="rbtn" style="background:var(--paper)"><svg class="ic"><use href="#i-back"/></svg></div>
+            <div class="r" style="gap:7px;flex:1;justify-content:center"><svg class="ic s" style="color:var(--sky)"><use href="#i-pin"/></svg><b style="font-size:15.5px">Maize plot — Ungogo</b><svg class="ic s"><use href="#i-chevd"/></svg></div>
+            <span style="width:44px"></span>
+          </div>
+          <div class="d" style="font-size:21px;line-height:1.3;margin-top:14px">Rain likely from 2 PM — finish spraying before noon.</div>
+          <div class="r" style="gap:14px;margin-top:12px">
+            <svg style="width:56px;height:56px;stroke:var(--sky);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#i-cloudsun"/></svg>
+            <span class="d" style="font-size:54px;line-height:1">31°</span>
+            <div><b style="font-size:15.5px">Part cloudy</b><div class="m13">H 33° · L 22° · feels 34°</div></div>
+          </div>
+        </div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:12px 18px 0">
+          <div class="card r" style="padding:12px 14px;background:var(--gold-tint);border-color:var(--gold-line);gap:10px">
+            <svg class="ic" style="color:var(--gold-ink)"><use href="#i-storm"/></svg>
+            <span style="font-size:14px;font-weight:700;color:var(--gold-ink);line-height:1.4">Heavy rain — Kano North, 3–6 PM. Cover drying grain.</span>
+          </div>
+          <div class="card" style="margin-top:11px;padding:13px 8px">
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);text-align:center">
+              <div><div class="m13">Now</div><svg class="ic" style="margin:7px auto"><use href="#i-sun"/></svg><b style="font-size:14.5px">31°</b><div class="m13" style="margin-top:3px">0%</div></div>
+              <div><div class="m13">1 PM</div><svg class="ic" style="margin:7px auto"><use href="#i-cloudsun"/></svg><b style="font-size:14.5px">32°</b><div class="m13" style="margin-top:3px">10%</div></div>
+              <div style="background:var(--sky-tint);border-radius:10px"><div class="m13" style="color:#1F6390">2 PM</div><svg class="ic" style="margin:7px auto;color:var(--sky)"><use href="#i-rain"/></svg><b style="font-size:14.5px">29°</b><div style="font-size:13px;font-weight:800;color:var(--sky);margin-top:3px">60%</div></div>
+              <div style="background:var(--sky-tint);border-radius:10px"><div class="m13" style="color:#1F6390">3 PM</div><svg class="ic" style="margin:7px auto;color:var(--sky)"><use href="#i-storm"/></svg><b style="font-size:14.5px">27°</b><div style="font-size:13px;font-weight:800;color:var(--sky);margin-top:3px">85%</div></div>
+              <div><div class="m13">5 PM</div><svg class="ic" style="margin:7px auto;color:var(--sky)"><use href="#i-rain"/></svg><b style="font-size:14.5px">26°</b><div style="font-size:13px;font-weight:800;color:var(--sky);margin-top:3px">70%</div></div>
+              <div><div class="m13">7 PM</div><svg class="ic" style="margin:7px auto"><use href="#i-cloud"/></svg><b style="font-size:14.5px">25°</b><div class="m13" style="margin-top:3px">20%</div></div>
+            </div>
+          </div>
+          <div class="chiprow" style="margin-top:11px;flex-wrap:wrap">
+            <span class="wc wc-sky" style="font-size:13px;padding:8px 13px">Good day to plant tomorrow</span>
+            <span class="wc wc-gold" style="font-size:13px;padding:8px 13px">Don't spray — wind 22 km/h</span>
+            <span class="wc wc-sky" style="font-size:13px;padding:8px 13px">Irrigation not needed</span>
+          </div>
+          <div style="margin-top:6px">
+            <div class="lrow"><b style="flex:.9">Tomorrow</b><svg class="ic"><use href="#i-sun"/></svg><span class="m13" style="width:34px;text-align:right">5%</span><span style="flex:1;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--sky-line),var(--sky));margin:0 4px"></span><b style="font-size:14px;font-variant-numeric:tabular-nums">22°/33°</b></div>
+            <div class="lrow"><b style="flex:.9">Wednesday</b><svg class="ic" style="color:var(--sky)"><use href="#i-storm"/></svg><span style="width:34px;text-align:right;font-size:13px;font-weight:800;color:var(--sky)">80%</span><span style="flex:1;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--sky-line),var(--sky));margin:0 4px"></span><b style="font-size:14px;font-variant-numeric:tabular-nums">21°/26°</b></div>
+            <div class="lrow"><b style="flex:.9">Thursday</b><svg class="ic" style="color:var(--earth)"><use href="#i-haze"/></svg><span class="m13" style="width:34px;text-align:right">0%</span><span style="flex:1;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--sky-line),var(--sky));margin:0 4px"></span><b style="font-size:14px;font-variant-numeric:tabular-nums">19°/30°</b></div>
+          </div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Weather</b> — verdict sentence · gold alert · precip rail · advisory chips · drawn icons (haze = harmattan)</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =============================== 06 · PROFILE =============================== -->
+<section class="flow">
+  <h2 class="d"><span class="no">06</span>Profile — a real destination, not a dead end</h2>
+  <p class="intro">Fixes the structure debt flagged in the <a href="research/index.html">synthesis</a>: the Profile tab becomes a real hub (v1 buried Settings and Wallet in a drawer), listings / orders / wallet / saved searches / language all surface here, and the god-HomeStack splits per tab. Merit lives here too — the gold trusted-trader stamp earned from completed deals.</p>
+  <p class="devi"><b>Note:</b> i18n rides the redesign — every row shown here takes its strings from locales, so the language row actually means something.</p>
+  <div class="frames">
+
+    <!-- F16 · Profile hub -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:10px 18px 16px">
+            <div class="r" style="gap:14px">
+              <div class="ava" style="width:66px;height:66px;background:var(--green);font-size:22px">MD</div>
+              <div style="flex:1">
+                <div class="d" style="font-size:22px">Musa Danladi</div>
+                <div class="m13" style="font-size:14px">Maize &amp; poultry · Ungogo, Kano</div>
+              </div>
+              <div class="rbtn"><svg class="ic"><use href="#i-gear"/></svg></div>
+            </div>
+            <div class="r" style="gap:8px;margin-top:12px;flex-wrap:wrap">
+              <span class="wc wc-g">✓ Verified</span>
+              <span class="wc wc-gold"><svg class="ic" style="width:13px;height:13px;fill:#D9A521;stroke:#D9A521"><use href="#i-star"/></svg>Trusted trader · 214 deals</span>
+            </div>
+            <div style="font-size:14.5px;font-weight:600;margin-top:10px">312 orders · ★ 4.8 · member since 2023</div>
+          </div>
+          <div class="bgap"></div>
+          <div class="band" style="flex:1;padding:2px 18px;border-bottom:0">
+            <div class="lrow"><svg class="ic" style="color:var(--green)"><use href="#i-tag"/></svg><b>My listings<small>12 active · 3 sold this week</small></b><svg class="ic s m"><use href="#i-chevr"/></svg></div>
+            <div class="lrow"><svg class="ic" style="color:var(--green)"><use href="#i-truck"/></svg><b>Orders<small>1 on the way — maize, 2 bags</small></b><svg class="ic s m"><use href="#i-chevr"/></svg></div>
+            <div class="lrow"><svg class="ic" style="color:var(--green)"><use href="#i-wallet"/></svg><b>Wallet<small>₦86,400 · ₦47,400 in escrow</small></b><svg class="ic s m"><use href="#i-chevr"/></svg></div>
+            <div class="lrow"><svg class="ic" style="color:var(--green)"><use href="#i-bkmk"/></svg><b>Saved searches<small>Maize under ₦45,000 · 2 more</small></b><svg class="ic s m"><use href="#i-chevr"/></svg></div>
+            <div class="lrow"><svg class="ic" style="color:var(--green)"><use href="#i-users"/></svg><b>My groups<small>Maize Growers · Tomato Growers · 2 more</small></b><svg class="ic s m"><use href="#i-chevr"/></svg></div>
+            <div class="lrow"><svg class="ic" style="color:var(--green)"><use href="#i-globe"/></svg><b>Language<small>Hausa</small></b><svg class="ic s m"><use href="#i-chevr"/></svg></div>
+            <div class="lrow"><svg class="ic" style="color:var(--green)"><use href="#i-receipt"/></svg><b>Receipts &amp; statements</b><svg class="ic s m"><use href="#i-chevr"/></svg></div>
+          </div>
+        </div>
+        <div class="nav">
+          <a><svg class="ic"><use href="#i-home"/></svg>Home</a>
+          <a><svg class="ic"><use href="#i-shop"/></svg>Shop</a>
+          <span class="fabwrap"><span class="fab"><svg class="ic l"><use href="#i-plus"/></svg></span>Post</span>
+          <a><svg class="ic"><use href="#i-chat"/></svg>Chat</a>
+          <a class="on"><svg class="ic"><use href="#i-user"/></svg>Profile</a>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Profile hub</b> — merit stamps · listings, orders, wallet, language surfaced</div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <b>Agrocom — Redesign Preview v2 · The Market Square.</b> Rebuilt from the completed Mobbin research pass — synthesis and the five flow reports live at <a href="research/index.html">research/index.html</a>. Sixteen frames, one system: one green #16A34A, gold for merit and savings only, sky-blue for weather only, every ₦ the real U+20A6 glyph with separators, words wherever a tap has consequences, ≥48px targets, solid scrims on photos, place-first context lines. Photo tiles here are designed gradient stand-ins — production uses unfiltered in-situ produce photography (heaps, sacks, hands), never stock, never picsum. v1 preserved at index-v1-backup.html.
+</footer>
+</div>
+
+</body>
+</html>

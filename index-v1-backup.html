@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agrocom — Redesign Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family:'Clash'; src:url('assets/ClashDisplay-Medium.ttf') format('truetype'); font-display:swap; }
+  :root {
+    /* One green. #16A34A everywhere a CTA lives — no more green-500/600/700 roulette. */
+    --green-900:#14532D; --green-700:#15803D; --green-600:#16A34A; --green-500:#22C55E;
+    --green-100:#DCFCE7; --green-50:#F0FDF4;
+    --earth:#8A5A2B; --earth-bg:#FBF4EA;
+    --ink-900:#17251B; --ink-700:#3F4E44; --ink-500:#77857B; --ink-300:#B9C4BC;
+    --bg:#F7FAF7; --surface:#FFFFFF; --line:#E6EDE7;
+    --sky:#0284C7; --sky-bg:#E8F4FC;
+    --red:#DC2626; --red-bg:#FDEBEA;
+    --gold:#EAB308;
+    --font-display:'Clash','Inter',sans-serif;
+    --radius:18px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',-apple-system,sans-serif; background:#0E1710; color:#E4EDE6; -webkit-font-smoothing:antialiased; }
+  .screen h1, .appbar h1, .btn, .section-title b, .big-num { font-family:var(--font-display); font-weight:500; font-synthesis:none; letter-spacing:.1px; }
+  .board-header { padding:64px 48px 32px; max-width:1440px; margin:0 auto; }
+  .board-header .wordmark { display:flex; align-items:center; gap:14px; font-family:var(--font-display); font-size:40px; color:#fff; }
+  .board-header .wordmark em { color:var(--green-500); font-style:normal; }
+  .board-header p { color:#A3B5A8; max-width:760px; margin-top:12px; line-height:1.65; font-size:15px; }
+  .tokens { display:flex; gap:28px; flex-wrap:wrap; margin-top:28px; align-items:flex-end; }
+  .swatches { display:flex; }
+  .swatch { width:52px; height:52px; border-radius:12px; margin-right:-8px; border:2px solid #0E1710; }
+  .token-note { font-size:12px; color:#71836F; margin-top:8px; }
+  .type-demo { background:#152119; border:1px solid #24352A; border-radius:16px; padding:18px 22px; }
+  .type-demo .t1 { font-family:var(--font-display); font-size:22px; color:#fff; }
+  .type-demo .t2 { font-weight:600; font-size:14px; color:#CBD9CF; margin-top:2px; }
+  .type-demo .t3 { font-weight:400; font-size:12.5px; color:#71836F; margin-top:2px; }
+  .flow { max-width:1440px; margin:0 auto; padding:40px 48px 8px; }
+  .flow > h2 { font-size:13px; letter-spacing:2.5px; text-transform:uppercase; color:var(--green-500); font-weight:700; }
+  .flow > p { color:#A3B5A8; font-size:14px; line-height:1.6; margin:10px 0 28px; max-width:820px; }
+  .frames { display:flex; gap:36px; flex-wrap:wrap; align-items:flex-start; }
+  .frame-label { text-align:center; margin-top:14px; font-size:13px; color:#71836F; font-weight:500; }
+  .phone { width:375px; height:812px; background:#000; border-radius:54px; padding:10px; box-shadow:0 24px 80px rgba(0,0,0,.6), 0 0 0 1px #24352A; position:relative; flex-shrink:0; }
+  .screen { width:100%; height:100%; border-radius:44px; overflow:hidden; position:relative; background:var(--bg); color:var(--ink-900); display:flex; flex-direction:column; font-size:14px; }
+  .island { position:absolute; top:22px; left:50%; transform:translateX(-50%); width:110px; height:32px; background:#000; border-radius:20px; z-index:50; }
+  .statusbar { height:58px; flex-shrink:0; display:flex; align-items:flex-end; justify-content:space-between; padding:0 30px 6px; font-size:14px; font-weight:600; }
+  .statusbar .icons { letter-spacing:2px; font-size:12px; }
+  .homebar { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); width:130px; height:5px; border-radius:3px; background:rgba(0,0,0,.85); z-index:50; }
+  .screen.on-photo .homebar, .screen.dark-scr .homebar { background:rgba(255,255,255,.85); }
+  .body { flex:1; overflow:hidden; display:flex; flex-direction:column; padding:0 20px; }
+  .screen:not(:has(> .navbar)) .body { padding-bottom:36px; }
+  .screen.dark-scr {
+    --bg:#101A12; --surface:#18251B; --line:#25382A;
+    --ink-900:#EAF2EC; --ink-700:#C6D4C9; --ink-500:#8BA090; --ink-300:#48584D;
+    --green-50:#1B2E20; --green-100:#234230; --earth-bg:#2A2117; --sky-bg:#12283A;
+    --red-bg:#331D1B;
+  }
+  .appbar { display:flex; align-items:center; gap:12px; padding:10px 0 14px; }
+  .appbar .back { width:38px; height:38px; border-radius:12px; background:var(--surface); border:1px solid var(--line); display:grid; place-items:center; }
+  .appbar h1 { font-size:18px; flex:1; }
+  .appbar .spacer { width:38px; }
+  .icon { width:22px; height:22px; stroke:currentColor; stroke-width:1.9; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+  .icon.sm { width:18px; height:18px; }
+  .icon.lg { width:26px; height:26px; }
+  .btn { display:flex; align-items:center; justify-content:center; gap:8px; height:54px; border-radius:16px; font-size:15.5px; }
+  .btn.primary { background:var(--green-600); color:#fff; box-shadow:0 8px 20px rgba(22,163,74,.28); }
+  .btn.ghost { background:var(--green-50); color:var(--green-700); }
+  .btn.outline { background:var(--surface); border:1.5px solid var(--line); color:var(--ink-900); }
+  .field { margin-bottom:14px; }
+  .field label { display:block; font-size:12.5px; font-weight:600; color:var(--ink-700); margin-bottom:7px; }
+  .input { height:54px; border-radius:14px; background:var(--surface); border:1.5px solid var(--line); display:flex; align-items:center; padding:0 16px; gap:10px; color:var(--ink-500); font-size:15px; }
+  .input.filled { color:var(--ink-900); font-weight:500; }
+  .navbar { flex-shrink:0; background:var(--surface); border-top:1px solid var(--line); display:flex; padding:10px 8px 26px; z-index:40; align-items:center; }
+  .navbar a { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; font-size:10.5px; font-weight:600; color:var(--ink-500); text-decoration:none; }
+  .navbar a.active { color:var(--green-600); }
+  .navbar .fab { width:54px; height:54px; border-radius:50%; background:var(--green-600); color:#fff; display:grid; place-items:center; margin-top:-26px; box-shadow:0 10px 22px rgba(22,163,74,.4); border:4px solid var(--surface); }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); }
+  .row { display:flex; align-items:center; gap:12px; }
+  .big-num { font-size:34px; font-variant-numeric:tabular-nums; }
+  .muted { color:var(--ink-500); }
+  .tag { font-size:11px; font-weight:700; padding:4px 10px; border-radius:9px; }
+  .tag.green { background:var(--green-100); color:var(--green-700); }
+  .tag.earth { background:var(--earth-bg); color:var(--earth); }
+  .tag.sky { background:var(--sky-bg); color:var(--sky); }
+  .avatar { width:44px; height:44px; border-radius:50%; display:grid; place-items:center; font-weight:700; color:#fff; font-size:15px; flex-shrink:0; }
+  .photo { display:grid; place-items:center; color:rgba(255,255,255,.55); font-weight:800; position:relative; overflow:hidden; }
+  .f1 { background:radial-gradient(130% 100% at 30% 20%, #4C8F45 0%, #2C6B33 50%, #14401E 100%); }
+  .f2 { background:radial-gradient(130% 100% at 30% 20%, #C9973B 0%, #8A5A2B 55%, #4A2E12 100%); }
+  .f3 { background:radial-gradient(130% 100% at 30% 20%, #4FA3C7 0%, #2B6E8F 55%, #123545 100%); }
+  .section-title { display:flex; align-items:baseline; justify-content:space-between; margin:18px 0 10px; }
+  .section-title b { font-size:16px; }
+  .section-title a { font-size:12.5px; font-weight:600; color:var(--green-600); text-decoration:none; }
+  .chip { padding:8px 15px; border-radius:20px; background:var(--surface); border:1.5px solid var(--line); font-size:13px; font-weight:600; color:var(--ink-700); }
+  .chip.on { background:var(--green-600); color:#fff; border-color:var(--green-600); }
+  .chiprow { display:flex; gap:8px; flex-wrap:wrap; }
+  .listgroup { background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:4px 16px; }
+  .lrow { display:flex; align-items:center; gap:13px; padding:13px 0; }
+  .lrow + .lrow { border-top:1px solid var(--line); }
+  .lrow .li { width:38px; height:38px; border-radius:12px; background:var(--green-50); color:var(--green-700); display:grid; place-items:center; flex-shrink:0; }
+  .lrow b { flex:1; font-size:14px; font-weight:600; }
+  .lrow small { font-size:11.5px; color:var(--ink-500); display:block; font-weight:400; margin-top:1px; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></symbol>
+  <symbol id="i-shop" viewBox="0 0 24 24"><path d="M4 7h16l-1.5 13.5h-13L4 7z"/><path d="M8.5 10V6a3.5 3.5 0 017 0v4"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2.3-2.7A8 8 0 1121 12z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.6-3.5 4.2-5 7.5-5s5.9 1.5 7.5 5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 004 0"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16 16"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.5S3.5 15.5 3.5 9.3C3.5 6.4 5.8 4 8.7 4c1.8 0 3.3 1.4 3.3 1.4S13.5 4 15.3 4c2.9 0 5.2 2.4 5.2 5.3 0 6.2-8.5 11.2-8.5 11.2z"/></symbol>
+  <symbol id="i-comment" viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2.3-2.7A8 8 0 1121 12z"/><path d="M8.5 10.5h7M8.5 13.5h4"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3M12 3L8 7m4-4l4 4"/><path d="M5 12v8.5h14V12"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12h2.5M19 12h2.5M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18.5a4.5 4.5 0 01-.4-9A6 6 0 0118.3 11a3.8 3.8 0 01-.8 7.5H7z"/></symbol>
+  <symbol id="i-rain" viewBox="0 0 24 24"><path d="M7 15.5a4.5 4.5 0 01-.4-9A6 6 0 0118.3 8a3.8 3.8 0 01-.8 7.5H7z"/><path d="M8.5 19l-1 2.5M13 19l-1 2.5M17.5 19l-1 2.5"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="17.5" cy="20" r="1.5"/><path d="M3 4h2.5l2.3 11.5h10.5L21 7.5H6"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.8 6.4 20l1.3-6.2L3 9.5l6.3-.7L12 3z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18"/><circle cx="16.5" cy="15" r="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-truck" viewBox="0 0 24 24"><path d="M2.5 6h11v11h-11zM13.5 10h4.5l3 3.5V17h-7.5"/><circle cx="6.5" cy="18.5" r="1.8"/><circle cx="17" cy="18.5" r="1.8"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 20C5 10 11 4 21 3.5 20.5 13.5 14.5 19.5 5 20z"/><path d="M5 20c3-6 7-10 12-12.5"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 19.5c1.3-3 3.6-4.3 6.5-4.3s5.2 1.3 6.5 4.3"/><path d="M16 5.6a3.5 3.5 0 010 5.8M18.5 15.4c1.6.7 2.6 2 3 4.1"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="2.5" y="6" width="13" height="12" rx="3"/><path d="M15.5 10.5l6-3.5v10l-6-3.5"/></symbol>
+  <symbol id="i-brain" viewBox="0 0 24 24"><path d="M9.5 3.5A3 3 0 006 6.2 3.4 3.4 0 004.5 12 3.4 3.4 0 006 17.8a3 3 0 003.5 2.7c1-.2 2.5-1.1 2.5-2.9V6.4c0-1.8-1.5-2.7-2.5-2.9z"/><path d="M14.5 3.5A3 3 0 0118 6.2 3.4 3.4 0 0119.5 12 3.4 3.4 0 0118 17.8a3 3 0 01-3.5 2.7c-1-.2-2.5-1.1-2.5-2.9V6.4c0-1.8 1.5-2.7 2.5-2.9z"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.5-7-11.5a7 7 0 0114 0C19 14.5 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="3"/><path d="M8.5 7L10 4h4l1.5 3"/><circle cx="12" cy="13.5" r="3.5"/></symbol>
+</svg>
+
+<header class="board-header">
+  <div class="wordmark"><img src="assets/logo-mark.png" alt="" style="width:52px; height:52px; object-fit:contain; background:#fff; border-radius:14px; padding:5px">Agro<em>com</em> — Redesign Preview</div>
+  <p>The farmers' super-app on one disciplined system: <b style="color:#7ED99B">one green (#16A34A)</b> instead of five, ClashDisplay kept as the display voice with Inter for body text (today a single Medium weight is synthesized into every bold), real ₦ symbols instead of ASCII "N", lucide iconography replacing emoji, and zero picsum.photos placeholders — every image slot gets a designed fallback.</p>
+  <div class="tokens">
+    <div>
+      <div class="swatches">
+        <div class="swatch" style="background:#14532D"></div>
+        <div class="swatch" style="background:#15803D"></div>
+        <div class="swatch" style="background:#16A34A"></div>
+        <div class="swatch" style="background:#DCFCE7"></div>
+        <div class="swatch" style="background:#F0FDF4"></div>
+        <div class="swatch" style="background:#8A5A2B"></div>
+        <div class="swatch" style="background:#0284C7"></div>
+        <div class="swatch" style="background:#EAB308"></div>
+        <div class="swatch" style="background:#DC2626"></div>
+      </div>
+      <div class="token-note">green scale · earth (produce/market) · sky (weather) · gold (ratings) · semantic red</div>
+    </div>
+    <div class="type-demo">
+      <div class="t1">Display / ClashDisplay — headlines, prices, buttons</div>
+      <div class="t2">Body / Inter 500–600 — posts, rows, forms</div>
+      <div class="t3">Caption / Inter 400 — timestamps, helper text</div>
+      <div class="token-note" style="margin-top:8px">Two-font system: brand voice on display, a real text face for reading.</div>
+    </div>
+  </div>
+</header>
+
+<!-- 01 ONBOARDING -->
+<section class="flow">
+  <h2>01 · Onboarding</h2>
+  <p>Photography-led onboarding (the farm imagery is the brand) with the language picker respected — and the app actually translated after it (today only 7 files use i18n across 20 shipped locales).</p>
+  <div class="frames">
+
+    <div>
+      <div class="phone"><div class="screen on-photo"><div class="island"></div>
+        <div class="photo f1" style="position:absolute; inset:0"><span style="font-size:64px; opacity:.3">🌾</span></div>
+        <div style="position:absolute; inset:0; background:linear-gradient(185deg,rgba(20,64,30,.15) 40%,rgba(10,26,14,.94) 80%)"></div>
+        <div class="body" style="position:relative; z-index:2; color:#fff; justify-content:flex-end; padding:0 28px">
+          <div class="row" style="gap:10px; position:absolute; top:66px; left:28px"><img src="assets/logo-mark-white.png" alt="" style="width:36px; height:36px; object-fit:contain"><b style="font-family:var(--font-display); font-size:20px">Agrocom</b></div>
+          <h1 style="font-size:31px; line-height:1.2">Where farmers<br>connect &amp; grow.</h1>
+          <p style="opacity:.85; font-size:14.5px; line-height:1.6; margin-top:10px">Sell your produce, learn from other farmers, and manage your money — in your language.</p>
+          <div class="row" style="gap:6px; margin:20px 0 14px"><div style="width:22px;height:6px;border-radius:3px;background:var(--green-500)"></div><div style="width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.4)"></div><div style="width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.4)"></div></div>
+          <div class="btn primary">Create account</div>
+          <div class="btn" style="color:#fff; height:48px; margin-bottom:18px">Sign in</div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label">Onboarding</div>
+    </div>
+
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="statusbar"><span>9:41</span><span class="icons">▮▮▮ ⏻</span></div>
+        <div class="body">
+          <div class="appbar"><div class="back"><svg class="icon"><use href="#i-back"/></svg></div><div style="flex:1; height:6px; border-radius:3px; background:var(--line); margin:0 4px"><div style="width:30%; height:100%; border-radius:3px; background:var(--green-600)"></div></div><span class="muted" style="font-size:12.5px; font-weight:600">2/6</span></div>
+          <h1 style="font-size:25px; margin-top:8px">Tell us about your farm</h1>
+          <p class="muted" style="font-size:13.5px; margin:6px 0 20px">This helps buyers and neighbours find you.</p>
+          <div class="field"><label>Farm name</label><div class="input filled">Danladi Farms</div></div>
+          <div class="field"><label>Location</label><div class="input filled"><svg class="icon sm" style="color:var(--green-600)"><use href="#i-pin"/></svg>Kaduna South, Kaduna<span style="margin-left:auto; color:var(--green-600); font-weight:700; font-size:13px">Use GPS</span></div></div>
+          <div class="field"><label>What do you mainly produce?</label></div>
+          <div class="chiprow">
+            <div class="chip on">🌽 Maize</div><div class="chip">🍅 Tomatoes</div><div class="chip on">🐔 Poultry</div>
+            <div class="chip">🥜 Groundnut</div><div class="chip">🍚 Rice</div><div class="chip">🐟 Fish</div>
+            <div class="chip">🥬 Vegetables</div><div class="chip">🐄 Cattle</div>
+          </div>
+          <div style="flex:1"></div>
+          <div class="btn primary">Continue</div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label">Signup — farm profile</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 02 HOME FEED -->
+<section class="flow">
+  <h2>02 · Home &amp; Community</h2>
+  <p>The feed leads with what farmers check daily — weather, then community. Posts get one card anatomy. The FAB keeps its three actions. Profile tab becomes a real hub so Settings/Wallet stop hiding in a drawer.</p>
+  <div class="frames">
+
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="statusbar"><span>9:41</span><span class="icons">▮▮▮ ⏻</span></div>
+        <div class="body" style="overflow:hidden">
+          <div class="row" style="padding:6px 0 12px">
+            <div class="avatar" style="background:linear-gradient(135deg,#22C55E,#15803D)">MD</div>
+            <div style="flex:1">
+              <div class="muted" style="font-size:11.5px">Sannu da zuwa 🌱</div>
+              <b style="font-size:15px">Musa Danladi</b>
+            </div>
+            <div class="appbar" style="padding:0; gap:8px"><div class="back"><svg class="icon"><use href="#i-search"/></svg></div><div class="back" style="position:relative"><svg class="icon"><use href="#i-bell"/></svg><div style="position:absolute; top:8px; right:8px; width:7px; height:7px; border-radius:4px; background:var(--red); border:1.5px solid var(--surface)"></div></div></div>
+          </div>
+          <div class="card" style="padding:13px 16px; background:var(--sky-bg); border-color:#CDE6F5">
+            <div class="row"><svg class="icon lg" style="color:var(--sky)"><use href="#i-rain"/></svg>
+              <div style="flex:1"><b style="font-size:14px">28° · Rain at 3 PM</b><div class="muted" style="font-size:11.5px">Kaduna South · Good day to move harvest early</div></div>
+              <span class="big-num" style="font-size:24px; color:var(--sky)">82%</span>
+            </div>
+          </div>
+          <div class="row" style="gap:12px; padding:14px 0 4px">
+            <div style="text-align:center"><div style="width:56px; height:56px; border-radius:50%; border:2px dashed var(--green-500); display:grid; place-items:center; color:var(--green-600)"><svg class="icon"><use href="#i-plus"/></svg></div><div style="font-size:10.5px; margin-top:4px; font-weight:600">Story</div></div>
+            <div style="text-align:center"><div style="width:56px; height:56px; border-radius:50%; background:var(--green-600); padding:2.5px"><div class="avatar" style="width:100%; height:100%; background:#8A5A2B">AB</div></div><div style="font-size:10.5px; margin-top:4px; font-weight:600">Abdul</div></div>
+            <div style="text-align:center"><div style="width:56px; height:56px; border-radius:50%; background:var(--green-600); padding:2.5px"><div class="avatar" style="width:100%; height:100%; background:#2B6E8F">NG</div></div><div style="font-size:10.5px; margin-top:4px; font-weight:600">Ngozi</div></div>
+            <div style="text-align:center"><div style="width:56px; height:56px; border-radius:50%; background:var(--line); padding:2.5px"><div class="avatar" style="width:100%; height:100%; background:#14532D">IF</div></div><div style="font-size:10.5px; margin-top:4px; font-weight:600" class="muted">Ifeanyi</div></div>
+            <div style="text-align:center"><div style="width:56px; height:56px; border-radius:50%; background:var(--line); padding:2.5px"><div class="avatar" style="width:100%; height:100%; background:#B45309">RE</div></div><div style="font-size:10.5px; margin-top:4px; font-weight:600" class="muted">Rekiya</div></div>
+          </div>
+          <div class="card" style="margin-top:10px; overflow:hidden; flex:1">
+            <div class="row" style="padding:12px 16px 10px"><div class="avatar" style="width:38px; height:38px; font-size:13px; background:#2B6E8F">NG</div><div style="flex:1"><b style="font-size:13.5px">Ngozi Okeke</b><div class="muted" style="font-size:11px">Tomato farmer · Jos · 2h</div></div><span class="tag green">Following</span></div>
+            <div style="padding:0 16px 10px; font-size:13.5px; line-height:1.5">Harvested 40 baskets this morning 🍅 Anyone with cold-chain transport from Jos to Abuja this week?</div>
+            <div class="photo f2" style="height:150px"><span style="font-size:40px; opacity:.4">🍅</span></div>
+            <div class="row" style="padding:10px 16px; gap:20px">
+              <span class="row" style="gap:6px; font-size:12.5px; font-weight:600" class="muted"><svg class="icon sm" style="color:var(--red)"><use href="#i-heart"/></svg>128</span>
+              <span class="row" style="gap:6px; font-size:12.5px; font-weight:600" class="muted"><svg class="icon sm"><use href="#i-comment"/></svg>34</span>
+              <span class="row" style="gap:6px; font-size:12.5px; font-weight:600" class="muted"><svg class="icon sm"><use href="#i-share"/></svg>Share</span>
+              <span style="margin-left:auto" class="tag earth">Marketplace</span>
+            </div>
+          </div>
+        </div>
+        <div class="navbar">
+          <a class="active"><svg class="icon"><use href="#i-home"/></svg>Home</a>
+          <a><svg class="icon"><use href="#i-shop"/></svg>Shop</a>
+          <a class="fab"><svg class="icon lg"><use href="#i-plus"/></svg></a>
+          <a><svg class="icon"><use href="#i-chat"/></svg>Chat</a>
+          <a><svg class="icon"><use href="#i-user"/></svg>Profile</a>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label">Home feed</div>
+    </div>
+
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="statusbar"><span>9:41</span><span class="icons">▮▮▮ ⏻</span></div>
+        <div class="body">
+          <div class="appbar" style="padding-top:8px"><h1 style="font-size:23px">Communities</h1><div class="back"><svg class="icon"><use href="#i-plus"/></svg></div></div>
+          <div class="input" style="margin-bottom:14px"><svg class="icon sm"><use href="#i-search"/></svg>Search communities</div>
+          <div class="card" style="padding:16px; background:linear-gradient(120deg,#14532D,#16A34A); border:0; color:#fff; margin-bottom:14px">
+            <b style="font-family:var(--font-display); font-size:17px">Kaduna Maize Growers</b>
+            <div style="font-size:12.5px; opacity:.85; margin-top:4px">2,340 members · 12 posts today</div>
+            <div class="row" style="margin-top:12px; gap:8px">
+              <span class="tag" style="background:rgba(255,255,255,.18); color:#fff"><svg class="icon" style="width:11px; height:11px; vertical-align:-1px"><use href="#i-video"/></svg> Live: Fertilizer Q&amp;A</span>
+              <div class="btn" style="height:34px; padding:0 16px; background:#fff; color:var(--green-700); font-size:12.5px; border-radius:17px; margin-left:auto">Join call</div>
+            </div>
+          </div>
+          <div class="section-title" style="margin-top:0"><b>Your communities</b><a>Discover</a></div>
+          <div class="listgroup" style="flex:1; overflow:hidden">
+            <div class="lrow"><div class="li"><svg class="icon sm"><use href="#i-leaf"/></svg></div><b>Tomato Farmers NG<small>18 new posts · 5.1k members</small></b><svg class="icon sm" style="color:var(--ink-300)"><use href="#i-chev"/></svg></div>
+            <div class="lrow"><div class="li" style="background:var(--earth-bg); color:var(--earth)"><svg class="icon sm"><use href="#i-truck"/></svg></div><b>Cold-chain &amp; Logistics<small>7 new posts · 890 members</small></b><svg class="icon sm" style="color:var(--ink-300)"><use href="#i-chev"/></svg></div>
+            <div class="lrow"><div class="li" style="background:var(--sky-bg); color:var(--sky)"><svg class="icon sm"><use href="#i-users"/></svg></div><b>Young Farmers Network<small>Quiet today · 12.4k members</small></b><svg class="icon sm" style="color:var(--ink-300)"><use href="#i-chev"/></svg></div>
+          </div>
+          <div style="height:10px"></div>
+        </div>
+        <div class="navbar">
+          <a class="active"><svg class="icon"><use href="#i-home"/></svg>Home</a>
+          <a><svg class="icon"><use href="#i-shop"/></svg>Shop</a>
+          <a class="fab"><svg class="icon lg"><use href="#i-plus"/></svg></a>
+          <a><svg class="icon"><use href="#i-chat"/></svg>Chat</a>
+          <a><svg class="icon"><use href="#i-user"/></svg>Profile</a>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label">Communities</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 03 MARKETPLACE -->
+<section class="flow">
+  <h2>03 · Marketplace</h2>
+  <p>Shop gets real category iconography, one product-card anatomy with honest ₦ pricing, and a product page that sells trust: seller rating, delivery estimate, and chat-with-farmer before the buy button.</p>
+  <div class="frames">
+
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="statusbar"><span>9:41</span><span class="icons">▮▮▮ ⏻</span></div>
+        <div class="body" style="overflow:hidden">
+          <div class="appbar" style="padding-top:8px"><h1 style="font-size:23px">Shop</h1><div class="back" style="position:relative"><svg class="icon"><use href="#i-cart"/></svg><div style="position:absolute; top:-4px; right:-4px; width:17px; height:17px; border-radius:9px; background:var(--green-600); color:#fff; font-size:10px; font-weight:700; display:grid; place-items:center">2</div></div></div>
+          <div class="input" style="margin-bottom:12px"><svg class="icon sm"><use href="#i-search"/></svg>Search fresh produce…</div>
+          <div class="chiprow" style="margin-bottom:14px"><div class="chip on">All</div><div class="chip">Grains</div><div class="chip">Vegetables</div><div class="chip">Poultry</div><div class="chip">Dairy</div></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; flex:1; overflow:hidden; align-content:start">
+            <div class="card" style="overflow:hidden"><div class="photo f2" style="height:110px"><span style="font-size:34px; opacity:.45">🌽</span><span class="tag green" style="position:absolute; top:8px; left:8px">Fresh</span></div><div style="padding:10px 12px"><b style="font-size:13px">Yellow Maize</b><div class="muted" style="font-size:11px; margin-top:2px">Danladi Farms · Kaduna</div><div class="row" style="margin-top:6px"><b class="big-num" style="font-size:15px; color:var(--green-700)">₦48,000<span class="muted" style="font-size:10.5px; font-family:'Inter'">/bag</span></b><span class="row" style="gap:3px; margin-left:auto; font-size:11px; font-weight:600"><svg class="icon" style="width:12px; height:12px; color:var(--gold); fill:var(--gold)"><use href="#i-star"/></svg>4.8</span></div></div></div>
+            <div class="card" style="overflow:hidden"><div class="photo f1" style="height:110px"><span style="font-size:34px; opacity:.45">🍅</span></div><div style="padding:10px 12px"><b style="font-size:13px">Roma Tomatoes</b><div class="muted" style="font-size:11px; margin-top:2px">Okeke Farms · Jos</div><div class="row" style="margin-top:6px"><b class="big-num" style="font-size:15px; color:var(--green-700)">₦14,500<span class="muted" style="font-size:10.5px; font-family:'Inter'">/basket</span></b><span class="row" style="gap:3px; margin-left:auto; font-size:11px; font-weight:600"><svg class="icon" style="width:12px; height:12px; color:var(--gold); fill:var(--gold)"><use href="#i-star"/></svg>4.9</span></div></div></div>
+            <div class="card" style="overflow:hidden"><div class="photo f3" style="height:110px"><span style="font-size:34px; opacity:.45">🐟</span></div><div style="padding:10px 12px"><b style="font-size:13px">Catfish (live)</b><div class="muted" style="font-size:11px; margin-top:2px">Blue Waters · Epe</div><div class="row" style="margin-top:6px"><b class="big-num" style="font-size:15px; color:var(--green-700)">₦3,200<span class="muted" style="font-size:10.5px; font-family:'Inter'">/kg</span></b><span class="row" style="gap:3px; margin-left:auto; font-size:11px; font-weight:600"><svg class="icon" style="width:12px; height:12px; color:var(--gold); fill:var(--gold)"><use href="#i-star"/></svg>4.7</span></div></div></div>
+            <div class="card" style="overflow:hidden"><div class="photo f2" style="height:110px; filter:hue-rotate(-20deg)"><span style="font-size:34px; opacity:.45">🥚</span></div><div style="padding:10px 12px"><b style="font-size:13px">Eggs (crate)</b><div class="muted" style="font-size:11px; margin-top:2px">Rekiya Poultry · Kano</div><div class="row" style="margin-top:6px"><b class="big-num" style="font-size:15px; color:var(--green-700)">₦4,800<span class="muted" style="font-size:10.5px; font-family:'Inter'">/crate</span></b><span class="row" style="gap:3px; margin-left:auto; font-size:11px; font-weight:600"><svg class="icon" style="width:12px; height:12px; color:var(--gold); fill:var(--gold)"><use href="#i-star"/></svg>5.0</span></div></div></div>
+          </div>
+        </div>
+        <div class="navbar">
+          <a><svg class="icon"><use href="#i-home"/></svg>Home</a>
+          <a class="active"><svg class="icon"><use href="#i-shop"/></svg>Shop</a>
+          <a class="fab"><svg class="icon lg"><use href="#i-plus"/></svg></a>
+          <a><svg class="icon"><use href="#i-chat"/></svg>Chat</a>
+          <a><svg class="icon"><use href="#i-user"/></svg>Profile</a>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label">Shop</div>
+    </div>
+
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="photo f2" style="height:38%; flex-shrink:0"><span style="font-size:64px; opacity:.4">🌽</span>
+          <div class="appbar" style="position:absolute; top:58px; left:20px; right:20px"><div class="back" style="background:rgba(255,255,255,.92)"><svg class="icon"><use href="#i-back"/></svg></div><div style="flex:1"></div><div class="back" style="background:rgba(255,255,255,.92)"><svg class="icon"><use href="#i-share"/></svg></div></div>
+        </div>
+        <div class="body" style="margin-top:-22px; background:var(--bg); border-radius:24px 24px 0 0; padding-top:18px; position:relative; z-index:3">
+          <div class="row">
+            <div style="flex:1"><b style="font-family:var(--font-display); font-size:21px">Yellow Maize</b><div class="muted" style="font-size:12.5px; margin-top:2px">50kg bag · Harvested this week</div></div>
+            <b class="big-num" style="font-size:24px; color:var(--green-700)">₦48,000</b>
+          </div>
+          <div class="card" style="margin-top:14px; padding:12px 14px">
+            <div class="row"><div class="avatar" style="width:40px; height:40px; font-size:13px; background:linear-gradient(135deg,#22C55E,#15803D)">MD</div>
+              <div style="flex:1"><b style="font-size:13.5px">Danladi Farms</b><div class="row" style="gap:4px; font-size:11.5px" class="muted"><svg class="icon" style="width:12px; height:12px; color:var(--gold); fill:var(--gold)"><use href="#i-star"/></svg><span class="muted">4.8 · 214 orders · Kaduna</span></div></div>
+              <div class="btn ghost" style="height:36px; padding:0 14px; font-size:12.5px; border-radius:12px"><svg class="icon sm"><use href="#i-chat"/></svg>Chat</div>
+            </div>
+          </div>
+          <div class="row" style="gap:10px; margin-top:12px">
+            <div class="card" style="flex:1; padding:11px; text-align:center"><svg class="icon" style="color:var(--green-600)"><use href="#i-truck"/></svg><div style="font-size:11px; font-weight:600; margin-top:4px">Delivery Tue</div></div>
+            <div class="card" style="flex:1; padding:11px; text-align:center"><svg class="icon" style="color:var(--green-600)"><use href="#i-check"/></svg><div style="font-size:11px; font-weight:600; margin-top:4px">Verified seller</div></div>
+            <div class="card" style="flex:1; padding:11px; text-align:center"><svg class="icon" style="color:var(--green-600)"><use href="#i-wallet"/></svg><div style="font-size:11px; font-weight:600; margin-top:4px">Pay on Agrocom</div></div>
+          </div>
+          <div class="section-title"><b>Details</b></div>
+          <p class="muted" style="font-size:13px; line-height:1.6">Dried yellow maize, moisture-tested, sorted and bagged. Minimum order 2 bags. Bulk discount from 10 bags.</p>
+          <div style="flex:1"></div>
+          <div class="row" style="gap:10px">
+            <div class="card" style="width:110px; height:54px; display:flex; align-items:center; justify-content:space-between; padding:0 14px; border-radius:16px"><b style="color:var(--ink-500)">−</b><b>2</b><b style="color:var(--green-600)">+</b></div>
+            <div class="btn primary" style="flex:1"><svg class="icon sm"><use href="#i-cart"/></svg>Add · ₦96,000</div>
+          </div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label">Product detail</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 04 FINTECH & UTILITIES -->
+<section class="flow">
+  <h2>04 · Wallet, Weather &amp; Brainbag</h2>
+  <p>Wallet with the virtual account front and center and honest states (no stubbed Send button — it's either there or it isn't). Weather uses real iconography sized for outdoor glare. Brainbag stays chat-first.</p>
+  <div class="frames">
+
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="statusbar"><span>9:41</span><span class="icons">▮▮▮ ⏻</span></div>
+        <div class="body">
+          <div class="appbar"><div class="back"><svg class="icon"><use href="#i-back"/></svg></div><h1>Wallet</h1><div class="spacer"></div></div>
+          <div style="background:linear-gradient(135deg,#14532D,#16A34A); border-radius:22px; padding:20px; color:#fff; box-shadow:0 12px 28px rgba(20,83,45,.35)">
+            <div style="font-size:12px; opacity:.8">Available balance</div>
+            <div class="big-num" style="font-size:36px">₦86,400<span style="font-size:20px; opacity:.75">.00</span></div>
+            <div class="row" style="gap:8px; margin-top:16px">
+              <div class="btn" style="flex:1; height:42px; background:#fff; color:var(--green-700); font-size:13px; border-radius:12px"><svg class="icon sm"><use href="#i-plus"/></svg>Add money</div>
+              <div class="btn" style="flex:1; height:42px; background:rgba(255,255,255,.16); color:#fff; font-size:13px; border-radius:12px"><svg class="icon sm"><use href="#i-share"/></svg>Receive</div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:12px; padding:13px 16px; background:var(--green-50); border-color:var(--green-100)">
+            <div class="row"><svg class="icon" style="color:var(--green-600)"><use href="#i-wallet"/></svg><div style="flex:1; font-size:12.5px"><b style="font-size:13px">Virtual account · Wema Bank</b><br><span class="muted">882 401 5567 — transfers land instantly</span></div><span style="color:var(--green-600); font-weight:700; font-size:12.5px">Copy</span></div>
+          </div>
+          <div class="section-title"><b>Recent</b><a>Statement</a></div>
+          <div class="listgroup" style="flex:1; overflow:hidden">
+            <div class="lrow"><div class="li"><svg class="icon sm"><use href="#i-cart"/></svg></div><b>Order #4821 — maize sale<small>Today · Ngozi Okeke</small></b><b style="color:var(--green-600); font-size:13.5px">+₦96,000</b></div>
+            <div class="lrow"><div class="li" style="background:var(--earth-bg); color:var(--earth)"><svg class="icon sm"><use href="#i-truck"/></svg></div><b>Delivery fee<small>Yesterday · GIG Logistics</small></b><b style="font-size:13.5px">−₦4,500</b></div>
+            <div class="lrow"><div class="li" style="background:var(--sky-bg); color:var(--sky)"><svg class="icon sm"><use href="#i-zap" href="#i-check"/></svg></div><b>Premium subscription<small>Jul 28 · auto-renew</small></b><b style="font-size:13.5px">−₦2,500</b></div>
+          </div>
+          <div style="height:8px"></div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label">Wallet</div>
+    </div>
+
+    <div>
+      <div class="phone"><div class="screen" style="background:linear-gradient(180deg,#0B3B57 0%,#14648F 45%, #F7FAF7 45.1%)"><div class="island"></div>
+        <div class="statusbar" style="color:#fff"><span>9:41</span><span class="icons">▮▮▮ ⏻</span></div>
+        <div class="body">
+          <div class="appbar" style="color:#fff"><div class="back" style="background:rgba(255,255,255,.15); border:0"><svg class="icon"><use href="#i-back"/></svg></div><h1 style="color:#fff">Weather</h1><div class="spacer"></div></div>
+          <div style="color:#fff; text-align:center; padding:8px 0 20px">
+            <div class="row" style="justify-content:center; gap:6px; font-size:13px; opacity:.85"><svg class="icon sm"><use href="#i-pin"/></svg>Kaduna South</div>
+            <div class="row" style="justify-content:center; gap:14px; margin-top:10px"><svg class="icon" style="width:56px; height:56px"><use href="#i-rain"/></svg><span class="big-num" style="font-size:64px">28°</span></div>
+            <b style="font-size:15px">Rain likely from 3 PM</b>
+            <div style="font-size:12.5px; opacity:.85; margin-top:4px">Humidity 82% · Wind 14 km/h · UV low</div>
+          </div>
+          <div class="card" style="padding:14px 16px; margin-top:6px">
+            <b style="font-size:13px; display:block; margin-bottom:10px">Today, hourly</b>
+            <div class="row" style="justify-content:space-between; text-align:center">
+              <div><div class="muted" style="font-size:11px">Now</div><svg class="icon" style="color:var(--gold); margin:6px 0"><use href="#i-sun"/></svg><b style="font-size:12.5px">28°</b></div>
+              <div><div class="muted" style="font-size:11px">1 PM</div><svg class="icon" style="color:var(--ink-500); margin:6px 0"><use href="#i-cloud"/></svg><b style="font-size:12.5px">29°</b></div>
+              <div><div class="muted" style="font-size:11px">3 PM</div><svg class="icon" style="color:var(--sky); margin:6px 0"><use href="#i-rain"/></svg><b style="font-size:12.5px">26°</b></div>
+              <div><div class="muted" style="font-size:11px">5 PM</div><svg class="icon" style="color:var(--sky); margin:6px 0"><use href="#i-rain"/></svg><b style="font-size:12.5px">24°</b></div>
+              <div><div class="muted" style="font-size:11px">7 PM</div><svg class="icon" style="color:var(--ink-500); margin:6px 0"><use href="#i-cloud"/></svg><b style="font-size:12.5px">23°</b></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:12px; padding:13px 16px; background:var(--green-50); border-color:var(--green-100)">
+            <div class="row" style="gap:10px"><svg class="icon" style="color:var(--green-600); flex-shrink:0"><use href="#i-brain"/></svg><span style="font-size:12.5px; line-height:1.5"><b>Brainbag tip:</b> <span class="muted">move drying maize under cover before 2 PM — 82% rain probability.</span></span></div>
+          </div>
+          <div class="listgroup" style="margin-top:12px; flex:1; overflow:hidden">
+            <div class="lrow"><b>Tomorrow<small>Sunny intervals</small></b><svg class="icon" style="color:var(--gold)"><use href="#i-sun"/></svg><b style="font-size:13px">31° / 22°</b></div>
+            <div class="lrow"><b>Wednesday<small>Thunderstorms</small></b><svg class="icon" style="color:var(--sky)"><use href="#i-rain"/></svg><b style="font-size:13px">26° / 21°</b></div>
+            <div class="lrow"><b>Thursday<small>Cloudy</small></b><svg class="icon" style="color:var(--ink-500)"><use href="#i-cloud"/></svg><b style="font-size:13px">27° / 21°</b></div>
+          </div>
+          <div style="height:8px"></div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label">Weather (real icons, farmer-first)</div>
+    </div>
+
+    <div>
+      <div class="phone"><div class="screen dark-scr"><div class="island"></div>
+        <div class="statusbar"><span>9:41</span><span class="icons">▮▮▮ ⏻</span></div>
+        <div class="body" style="overflow:hidden">
+          <div class="row" style="padding:6px 0 12px">
+            <div class="avatar" style="background:linear-gradient(135deg,#22C55E,#15803D)">MD</div>
+            <div style="flex:1">
+              <div class="muted" style="font-size:11.5px">Good evening 🌙</div>
+              <b style="font-size:15px">Musa Danladi</b>
+            </div>
+            <div class="appbar" style="padding:0; gap:8px"><div class="back"><svg class="icon"><use href="#i-search"/></svg></div><div class="back"><svg class="icon"><use href="#i-bell"/></svg></div></div>
+          </div>
+          <div class="card" style="padding:13px 16px; background:var(--sky-bg); border-color:#1D3D56">
+            <div class="row"><svg class="icon lg" style="color:#4FA3C7"><use href="#i-cloud"/></svg>
+              <div style="flex:1"><b style="font-size:14px">23° · Clear night</b><div class="muted" style="font-size:11.5px">Kaduna South · Light dew expected</div></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:12px; overflow:hidden; flex:1">
+            <div class="row" style="padding:12px 16px 10px"><div class="avatar" style="width:38px; height:38px; font-size:13px; background:#8A5A2B">AB</div><div style="flex:1"><b style="font-size:13.5px">Abdul Bello</b><div class="muted" style="font-size:11px">Poultry · Kano · 4h</div></div></div>
+            <div style="padding:0 16px 10px; font-size:13.5px; line-height:1.5">Vaccination day at the farm. 500 birds done before noon 💪</div>
+            <div class="photo f1" style="height:150px"><span style="font-size:40px; opacity:.4">🐔</span></div>
+            <div class="row" style="padding:10px 16px; gap:20px">
+              <span class="row" style="gap:6px; font-size:12.5px; font-weight:600"><svg class="icon sm" style="color:var(--red)"><use href="#i-heart"/></svg>86</span>
+              <span class="row" style="gap:6px; font-size:12.5px; font-weight:600"><svg class="icon sm"><use href="#i-comment"/></svg>12</span>
+              <span class="row" style="gap:6px; font-size:12.5px; font-weight:600"><svg class="icon sm"><use href="#i-share"/></svg>Share</span>
+            </div>
+          </div>
+        </div>
+        <div class="navbar">
+          <a class="active"><svg class="icon"><use href="#i-home"/></svg>Home</a>
+          <a><svg class="icon"><use href="#i-shop"/></svg>Shop</a>
+          <a class="fab"><svg class="icon lg"><use href="#i-plus"/></svg></a>
+          <a><svg class="icon"><use href="#i-chat"/></svg>Chat</a>
+          <a><svg class="icon"><use href="#i-user"/></svg>Profile</a>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label">Home — dark (token swap)</div>
+    </div>
+
+  </div>
+</section>
+
+<footer style="max-width:1440px; margin:0 auto; padding:24px 48px 80px; color:#71836F; font-size:13px; line-height:1.7">
+  <b style="color:#A3B5A8">Next steps:</b> Mobbin research pass against agri/social/commerce hybrids (Facebook Marketplace, Jiji, ThriveAgric patterns) plus fintech wallets · replace all 24 picsum.photos fallbacks with designed placeholders · finish i18n adoption so the language picker means something. · Preview v1 · Agrocom redesign
+</footer>
+
+</body>
+</html>

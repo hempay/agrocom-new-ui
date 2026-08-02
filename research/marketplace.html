@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agrocom Research — Marketplace</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #121712;
+    color: #EDF2EA;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+    padding: 40px 24px 80px;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  header { margin-bottom: 40px; border-bottom: 1px solid #2A332A; padding-bottom: 28px; }
+  .kicker {
+    color: #16A34A; font-size: 13px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .thesis { font-size: 17px; color: #B9C4B5; max-width: 820px; }
+  .meta { margin-top: 14px; font-size: 13px; color: #7C8878; }
+  .meta b { color: #D9A521; font-weight: 600; }
+
+  h2 {
+    font-size: 22px; font-weight: 750; margin: 52px 0 8px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  h2::before { content: ""; width: 6px; height: 22px; background: #16A34A; border-radius: 3px; }
+  .sub { color: #93A08E; font-size: 14.5px; margin-bottom: 22px; max-width: 780px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 18px; }
+  .card {
+    background: #1B221B; border: 1px solid #2A332A; border-radius: 14px;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .card a.shot { display: block; background: #10140F; }
+  .card img { width: 100%; display: block; aspect-ratio: 300/650; object-fit: cover; }
+  .cap { padding: 14px 16px 16px; }
+  .cap .app { font-size: 12px; font-weight: 700; color: #16A34A; text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 5px; }
+  .cap p { font-size: 13.5px; color: #C6D0C1; }
+  .cap a { color: #8FBF9A; text-decoration: none; font-size: 12.5px; }
+  .cap a:hover { text-decoration: underline; }
+
+  .plist { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .pat {
+    background: #1B221B; border: 1px solid #2A332A; border-radius: 14px; padding: 18px 20px;
+  }
+  .pat h3 { font-size: 15.5px; font-weight: 700; margin-bottom: 7px; color: #EDF2EA; }
+  .pat h3 .n { color: #D9A521; font-weight: 800; margin-right: 6px; }
+  .pat p { font-size: 13.5px; color: #B9C4B5; }
+  .pat code, .rec code {
+    background: #10140F; border: 1px solid #2A332A; border-radius: 6px;
+    padding: 1px 6px; font-size: 12.5px; color: #D9E6D3;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .diff { border-left: 3px solid #D9A521; background: #1B221B; border-radius: 0 14px 14px 0; padding: 16px 20px; margin-bottom: 12px; }
+  .diff b { color: #EDF2EA; }
+  .diff { font-size: 14px; color: #B9C4B5; }
+
+  .rec {
+    background: #1B221B; border: 1px solid #24402A; border-radius: 14px; padding: 20px 22px; margin-bottom: 14px;
+  }
+  .rec h3 { font-size: 16px; font-weight: 750; color: #EDF2EA; margin-bottom: 8px; }
+  .rec h3 .tag {
+    display: inline-block; background: rgba(22,163,74,0.16); color: #4ADE80;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    border-radius: 999px; padding: 3px 10px; margin-right: 8px; vertical-align: 2px;
+  }
+  .rec p, .rec li { font-size: 14px; color: #B9C4B5; }
+  .rec ul { margin: 8px 0 0 18px; }
+  .rec li { margin-bottom: 5px; }
+  .naira { color: #D9A521; font-weight: 700; }
+
+  .mock {
+    background: #10140F; border: 1px dashed #34532F; border-radius: 12px; padding: 14px 16px;
+    margin-top: 12px; font-size: 13px; color: #93A08E;
+  }
+  .mock .price { font-size: 22px; font-weight: 800; color: #EDF2EA; letter-spacing: -0.01em; }
+  .mock .unit { color: #4ADE80; font-weight: 600; font-size: 13px; }
+  .mock .chip {
+    display: inline-block; background: #1B221B; border: 1px solid #2A332A; border-radius: 999px;
+    padding: 2px 9px; font-size: 11.5px; color: #C6D0C1; margin-right: 5px; margin-top: 7px;
+  }
+  .mock .chip.v { color: #4ADE80; border-color: #24402A; }
+
+  footer { margin-top: 60px; font-size: 12.5px; color: #5F6B5B; border-top: 1px solid #2A332A; padding-top: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Agrocom Research</div>
+  <h1>Marketplace — browse &amp; sell</h1>
+  <p class="thesis">The best classifieds apps treat the photo as the card and the price as the headline: near-zero chrome, price before title, location and recency as trust signals, and a sell flow that starts with the camera and finishes in three taps. Agrocom should copy that skeleton and re-skin it for the open-air produce market: big ₦ figures, per-bag/per-kg units, verified sellers, and photos shot at the stall.</p>
+  <div class="meta">Flow: Marketplace home · category browse · search &amp; filters · listing cards · create-a-listing &nbsp;•&nbsp; Sources: Mobbin (iOS) &nbsp;•&nbsp; <b>2026-08-02</b></div>
+</header>
+
+<h2>Top examples</h2>
+<p class="sub">Screens examined on Mobbin. Each image links to its canonical Mobbin page.</p>
+<div class="grid">
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/screens/e46c5ea2-e80f-4437-877a-1f10fd674dd5"><img src="https://mobbin.com/api/mcp/short/FUMDYA36" alt="Facebook Marketplace home" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">Facebook Marketplace</div>
+      <p>Home: two chunky pills — <b>Sell</b> and <b>Categories</b> — sit above everything. All / Local only / Delivery tabs, "Today's picks" with an explicit location chip, then an edge-to-edge 2-col photo grid. Caption format is <b>"$1 · Nintendo Switch!"</b> — price is literally the first word.</p>
+      <a href="https://mobbin.com/screens/e46c5ea2-e80f-4437-877a-1f10fd674dd5">View on Mobbin →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/screens/1d78c872-41f2-4152-afdf-412ac1dfdb79"><img src="https://mobbin.com/api/mcp/short/YTY7JBzA" alt="Facebook Marketplace vehicles browse" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">Facebook Marketplace — category browse</div>
+      <p>Vehicles category: location pin under the title, a chip row (Filters · Sort · Research) with an active-filter count badge, then big bold price on its own line above the title, with strikethrough for cuts ($14,500 <s>$18,000</s>) and "Free" rendered as a price.</p>
+      <a href="https://mobbin.com/screens/1d78c872-41f2-4152-afdf-412ac1dfdb79">View on Mobbin →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/screens/b961507b-6ad8-4193-82bf-f993ecec09aa"><img src="https://mobbin.com/api/mcp/short/NERxHZNW" alt="Depop browse grid" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">Depop</div>
+      <p>2-col grid of seller-shot, in-situ photos (clothes on floors and beds — honest, not studio). Card = photo, brand, size, bold price. Heart-with-count overlays double as social proof. Search bar has a camera icon; <b>Sell is a permanent center tab</b>.</p>
+      <a href="https://mobbin.com/screens/b961507b-6ad8-4193-82bf-f993ecec09aa">View on Mobbin →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/screens/72634f43-9539-4fb6-a239-51f7963b64c3"><img src="https://mobbin.com/api/mcp/short/zom1Gj5g" alt="Mercari home grid" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">Mercari</div>
+      <p>Dense themed shelves; the price (¥3,850) is <b>stamped directly on the photo</b> in a bold overlay, with "NEW" corner ribbons. Price stays readable even at thumbnail size — a strong pattern for sunlight legibility.</p>
+      <a href="https://mobbin.com/screens/72634f43-9539-4fb6-a239-51f7963b64c3">View on Mobbin →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/screens/bb8d5025-1a40-4a15-9e18-03e0ea60cdd9"><img src="https://mobbin.com/api/mcp/short/IR8VrJQb" alt="Nextdoor listings near you" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">Nextdoor</div>
+      <p>"More listings near you": bold price first, then title, then a meta line of <b>recency · distance · neighborhood</b> ("3w · 0.3 mi · Boston"). Teal "$130 off" badges overlay the photo. Distance + freshness is the whole trust story.</p>
+      <a href="https://mobbin.com/screens/bb8d5025-1a40-4a15-9e18-03e0ea60cdd9">View on Mobbin →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/screens/70e5e152-89a1-49d5-94f8-421b690c8de4"><img src="https://mobbin.com/api/mcp/short/URukKjyr" alt="eBay search results with filter chips" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">eBay</div>
+      <p>Search results: horizontal chip row (Filter · Sort · Sold Items · Price) directly under search, a floating "4,300,000+ results" count, and cards rich in decision meta: condition, bids/Buy It Now, delivery cost, seller location.</p>
+      <a href="https://mobbin.com/screens/70e5e152-89a1-49d5-94f8-421b690c8de4">View on Mobbin →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/screens/182adcca-da36-4e5d-b2a3-91de1d16a481"><img src="https://mobbin.com/api/mcp/short/P5i7qpZg" alt="Vinted search results" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">Vinted</div>
+      <p>Results show two prices: item price and the all-in "incl." price with a shield icon — <b>fee transparency as a trust device</b>. Condition ("New with tags") sits right in the card meta.</p>
+      <a href="https://mobbin.com/screens/182adcca-da36-4e5d-b2a3-91de1d16a481">View on Mobbin →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/screens/7468b983-4506-4000-be2d-1d077e928012"><img src="https://mobbin.com/api/mcp/short/ObifrwEy" alt="Karrot category grid" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">Karrot (Daangn)</div>
+      <p>Category screen for the world's biggest local secondhand app: a simple 4-col grid of <b>object photos, not abstract icons</b> — pots, plants, packaged food — each with a short label. Instantly scannable at low literacy levels.</p>
+      <a href="https://mobbin.com/screens/7468b983-4506-4000-be2d-1d077e928012">View on Mobbin →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/flows/541abd24-a9a5-4058-b417-00ebd733b49f"><img src="https://mobbin.com/api/mcp/short/DnSUg5Y8" alt="Mercari sell form pricing" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">Mercari — sell flow</div>
+      <p>One scrollable form: 1–20 photo slots on top, then title → category → condition → description → price. The pricing block shows <b>fee (10%) and your profit live</b> as you type the price. Save-draft always available.</p>
+      <a href="https://mobbin.com/flows/541abd24-a9a5-4058-b417-00ebd733b49f">View flow on Mobbin →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/flows/e1bd32fb-c68c-4ae7-8b65-16e47d05571c"><img src="https://mobbin.com/api/mcp/short/4pQzJCXL" alt="Nextdoor new listing form" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">Nextdoor — sell flow</div>
+      <p>Photo-first: the flow opens in the camera roll before any form. The listing form has photos with a "Cover" label and drag-to-reorder, title, category, <b>price field with a "Free" toggle</b>, and a pickup location shown as a fuzzy map circle (privacy-safe).</p>
+      <a href="https://mobbin.com/flows/e1bd32fb-c68c-4ae7-8b65-16e47d05571c">View flow on Mobbin →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/flows/af2aced0-b3e0-4894-ad95-079d050b1de2"><img src="https://mobbin.com/api/mcp/short/GViIvqXY" alt="Vestiaire listing checklist" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">Vestiaire Collective — sell flow</div>
+      <p>Listing broken into a <b>checklist with green checkmarks</b> (Details · Photos · Description · Address · Price) and a "1 step left" header — completion is visible and motivating. Nudges quantify value: "choose your model and increase your chances of selling by 30%". Success screen shows earnings math ($300 → you earn $291) and "Sell another item".</p>
+      <a href="https://mobbin.com/flows/af2aced0-b3e0-4894-ad95-079d050b1de2">View flow on Mobbin →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <a class="shot" href="https://mobbin.com/flows/9f6278f3-41a4-4e03-9e3f-0db7cc5bcac7"><img src="https://mobbin.com/api/mcp/short/H5C9P2D4" alt="Depop sell an item form" loading="lazy"></a>
+    <div class="cap">
+      <div class="app">Depop — sell flow</div>
+      <p>"Sell an item" is one screen of chunky pill selectors (Category · Brand · Condition), a big price field, shipping, then two clear exits: <b>Save to drafts</b> or <b>Post listing</b>. Empty shop states push "Start selling" with potential-revenue framing.</p>
+      <a href="https://mobbin.com/flows/9f6278f3-41a4-4e03-9e3f-0db7cc5bcac7">View flow on Mobbin →</a>
+    </div>
+  </div>
+
+</div>
+
+<h2>Common patterns</h2>
+<p class="sub">Consistent across Facebook Marketplace, Depop, Mercari, Vinted, eBay, Nextdoor, Karrot and Vestiaire.</p>
+<div class="plist">
+  <div class="pat"><h3><span class="n">01</span>The photo is the card</h3>
+    <p>2-column grid, square-ish photos, hairline or zero borders, no drop shadows. Everything textual lives in a 2–3 line caption below (or overlaid on) the image. Seller-shot, in-context photos outperform studio cutouts on every C2C app.</p></div>
+  <div class="pat"><h3><span class="n">02</span>Price before title</h3>
+    <p>Facebook writes <code>$65 · 4moms MamaRoo</code>; Nextdoor and eBay bold the price on its own line above the name. The buyer's first question is answered before they read a single word of title.</p></div>
+  <div class="pat"><h3><span class="n">03</span>Location + recency as the trust line</h3>
+    <p>Local marketplaces put <code>3w · 0.3 mi · Boston</code> (Nextdoor) or a location chip on the section header (Facebook's "Today's picks · Parsippany"). Distance and freshness substitute for brand trust between strangers.</p></div>
+  <div class="pat"><h3><span class="n">04</span>Filter chips, not filter pages</h3>
+    <p>One horizontal chip row under search (Filter · Sort · Price · Condition), applied filters rendered as removable chips (Crypto.com, eBay, Vestiaire), full criteria in a bottom sheet. Result counts ("500+ results") confirm the query worked.</p></div>
+  <div class="pat"><h3><span class="n">05</span>Sell is never more than one tap away</h3>
+    <p>Depop, Vinted and Vestiaire give selling a permanent center tab; Facebook puts a fat "Sell" pill at the very top of Marketplace home. Supply is the lifeblood, so the entrance is unmissable.</p></div>
+  <div class="pat"><h3><span class="n">06</span>Photo-first listing creation</h3>
+    <p>Every flow starts with the camera / photo picker, not a text form. Photos slots sit at the top of the form (Mercari's 1–20 slots, Nextdoor's cover + drag-to-reorder), and tips push photo quality ("Catch your buyers' eye — use quality photos").</p></div>
+  <div class="pat"><h3><span class="n">07</span>Drafts, checklists, and completion feedback</h3>
+    <p>"Save to drafts" (Depop, Mercari), green-check checklists with "1 step left" (Vestiaire), and success screens with earnings math + "Sell another item". Listing is treated as a funnel to be protected, never a form to be abandoned.</p></div>
+  <div class="pat"><h3><span class="n">08</span>Honest price states</h3>
+    <p>Strikethrough for reductions, "Free" as a first-class price, "$60 off" photo badges, fee/profit math shown while pricing (Mercari), all-in buyer price with shield (Vinted). Ambiguity around money is the #1 trust killer, so nobody hides it.</p></div>
+</div>
+
+<h2>What the best apps do differently</h2>
+<div class="diff"><b>Facebook Marketplace</b> wins on ruthless economy: no card chrome at all, price as the first token of a single caption line, and browse/sell/categories all reachable from one header. It reads like a bulletin board, not a store — which is exactly why it feels local.</div>
+<div class="diff"><b>Mercari</b> puts the price on the photo itself and shows sellers their fee and net profit while they type the price — the most honest pricing moment in any flow reviewed.</div>
+<div class="diff"><b>Nextdoor</b> designs for neighbors, not SKUs: fuzzy map circles for pickup location, a Free toggle at parity with price, and recency-plus-distance meta on every card. Its 19-screen flow still <i>feels</i> short because photos come first and the form is one screen.</div>
+<div class="diff"><b>Vestiaire Collective</b> gamifies completeness — checklist with green ticks, "1 step left", "+30% chance of selling" nudges — converting listing quality into seller motivation instead of a validation error.</div>
+<div class="diff"><b>Karrot</b> proves category navigation doesn't need taxonomy trees: one grid of photographed objects with two-word labels. Zero-literacy-barrier navigation, directly relevant to Agrocom's audience.</div>
+
+<h2>Recommendations for Agrocom</h2>
+<p class="sub">Utilitarian, sunlight-legible, honest about money. NOT fintech — a market square you can carry.</p>
+
+<div class="rec">
+  <h3><span class="tag">Cards</span>Price-forward listing cards with big ₦ figures</h3>
+  <p>2-col grid, square produce photo (radius 14, no shadow), then a caption stack led by the price in ClashDisplay at ~20px — the biggest text on the card. Always <span class="naira">₦</span> (U+20A6), never ASCII "N"; always thousands separators. Meta in Inter ≥ 13px at high contrast.</p>
+  <div class="mock">
+    <div class="price">₦45,000 <span class="unit">/ bag</span></div>
+    <div>Maize, dried — 100kg bag</div>
+    <div><span class="chip v">✓ Verified seller</span><span class="chip">Kaduna · 12 km</span><span class="chip">2h ago</span></div>
+  </div>
+</div>
+
+<div class="rec">
+  <h3><span class="tag">Agri-specific</span>Quantity &amp; unit as a first-class field</h3>
+  <p>Farm trade is priced per unit, not per item. Bake units into the data model and the card: <span class="naira">₦45,000 / bag</span>, <span class="naira">₦1,200 / kg</span>, <span class="naira">₦800 / paint bucket</span>, / crate, / tuber, / 25kg sack. In the sell flow, unit is a chunky chip selector next to the price field, and quantity available ("15 bags left") shows on the listing. This is the single biggest gap in every generic reference app.</p>
+</div>
+
+<div class="rec">
+  <h3><span class="tag">Trust</span>Location + verified-seller chips on every card</h3>
+  <p>Copy Nextdoor's meta line: <code>state/LGA · distance · recency</code>. Add a green-check "Verified" chip tied to Agrocom's WhatsApp/phone verification. On the listing page, show seller name, face, and response time — buyers are choosing a person to haggle with, not a product to checkout.</p>
+</div>
+
+<div class="rec">
+  <h3><span class="tag">Sell flow</span>Photo-first, three steps, ruthless</h3>
+  <ul>
+    <li><b>Step 1 — Photos:</b> tapping Sell opens the camera immediately (Nextdoor pattern). Up to ~8 photos, first is cover, drag to reorder. Tip banner: "Shoot in daylight, show the heap/sack."</li>
+    <li><b>Step 2 — Details:</b> one screen of chip selectors: category (photo tiles), quantity + unit, condition/grade (fresh / dried / sorted), title auto-suggested from category.</li>
+    <li><b>Step 3 — Price:</b> giant ₦ input with unit suffix, "Negotiable" and "Free" toggles, and a market-price hint ("Maize is trading ₦42k–₦48k/bag near you"). Post or Save draft.</li>
+  </ul>
+  <p style="margin-top:8px;">Vestiaire-style progress ("1 step left") and a success screen with "Sell another item" + share-to-WhatsApp.</p>
+</div>
+
+<div class="rec">
+  <h3><span class="tag">Browse</span>Category tiles with real produce photography</h3>
+  <p>Karrot-style grid, but 2-col and chunky (≥ 100px tall, ≥ 48px tap targets everywhere): Grains, Tubers, Vegetables, Fruits, Livestock, Poultry, Inputs &amp; seeds, Equipment. Photograph real market produce — sacks, crates, heaps — not flat icons. Marketplace home = search bar with camera icon, Sell pill (green, top of screen, Facebook pattern), category rail, then "Near you today" grid with an explicit location chip.</p>
+</div>
+
+<div class="rec">
+  <h3><span class="tag">Search</span>Chip-row filters + bottom sheet</h3>
+  <p>Under search: <code>Filters · Sort · Price · Distance · Unit</code> chips with an active-count badge; full sheet holds category, ₦ range slider, distance radius, verified-only toggle. Applied filters render as removable chips above results, with a visible result count. Support "save this search" for repeat buyers (traders restocking weekly).</p>
+</div>
+
+<div class="rec">
+  <h3><span class="tag">Sunlight</span>Legibility mandates for this flow</h3>
+  <p>White cards on near-white background in-app (the dark board here is report chrome only); text ≥ 13px at ≥ 7:1 contrast for meta, prices near-black; price overlays on photos use a solid scrim, never bare text on image; one green #16A34A for actions and verified marks, gold reserved for price highlights and "featured" — never both on the same element.</p>
+</div>
+
+<footer>Agrocom design research · Marketplace browse &amp; sell · Sources: Mobbin iOS — Facebook Marketplace, Depop, Mercari, Vinted, eBay, Nextdoor, Karrot, Vestiaire Collective, Whatnot, Faire · 2026-08-02</footer>
+</div>
+</body>
+</html>

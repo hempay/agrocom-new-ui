@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agrocom Research — Product &amp; Checkout</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #121712;
+    color: #EDF2EA;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.6;
+    padding: 48px 24px 96px;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  header { margin-bottom: 48px; border-bottom: 1px solid #263226; padding-bottom: 28px; }
+  .kicker {
+    color: #16A34A; font-size: 13px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .thesis { font-size: 17px; color: #B9C7B4; max-width: 860px; }
+  .meta { margin-top: 14px; font-size: 13px; color: #7E8F79; }
+  .meta span { color: #D9A521; }
+
+  h2 {
+    font-size: 22px; font-weight: 750; margin: 56px 0 8px;
+    letter-spacing: -0.01em;
+  }
+  h2::before { content: "// "; color: #16A34A; font-weight: 800; }
+  .sub { color: #8FA089; font-size: 14px; margin-bottom: 22px; max-width: 820px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
+  .shot {
+    background: #1B221B; border: 1px solid #2A352A; border-radius: 14px;
+    overflow: hidden; display: flex; flex-direction: column;
+    transition: border-color .15s;
+  }
+  .shot:hover { border-color: #16A34A; }
+  .shot a.img { display: block; background: #0D110D; }
+  .shot img { width: 100%; display: block; aspect-ratio: 300/650; object-fit: cover; object-position: top; }
+  .cap { padding: 12px 14px 14px; }
+  .cap .app { font-size: 13px; font-weight: 700; color: #EDF2EA; }
+  .cap .app a { color: #4ADE80; text-decoration: none; }
+  .cap .app a:hover { text-decoration: underline; }
+  .cap p { font-size: 12.5px; color: #A7B6A1; margin-top: 4px; }
+  .tag {
+    display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: #D9A521; margin-bottom: 6px;
+  }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .card {
+    background: #1B221B; border: 1px solid #2A352A; border-radius: 14px; padding: 20px 22px;
+  }
+  .card h3 { font-size: 15.5px; font-weight: 700; margin-bottom: 8px; color: #EDF2EA; }
+  .card h3 .n { color: #16A34A; margin-right: 6px; }
+  .card p { font-size: 13.5px; color: #B9C7B4; }
+  .card p strong { color: #EDF2EA; }
+  .card .src { display: block; margin-top: 10px; font-size: 12px; color: #7E8F79; }
+
+  .diff { border-left: 3px solid #16A34A; padding: 4px 0 4px 20px; margin-bottom: 20px; }
+  .diff h3 { font-size: 15.5px; font-weight: 700; margin-bottom: 4px; }
+  .diff h3 a { color: #4ADE80; text-decoration: none; }
+  .diff h3 a:hover { text-decoration: underline; }
+  .diff p { font-size: 14px; color: #B9C7B4; max-width: 880px; }
+
+  .rec {
+    background: #1B221B; border: 1px solid #2A352A; border-radius: 14px;
+    padding: 22px 24px; margin-bottom: 16px;
+  }
+  .rec.hero { border-color: #16A34A; background: linear-gradient(180deg, #1B241B, #1B221B); }
+  .rec h3 { font-size: 16px; font-weight: 750; margin-bottom: 8px; }
+  .rec h3 .pill {
+    display: inline-block; background: #16A34A; color: #06130A; font-size: 11px;
+    font-weight: 800; border-radius: 999px; padding: 2px 10px; margin-right: 10px;
+    vertical-align: 2px; letter-spacing: .05em;
+  }
+  .rec p, .rec li { font-size: 14px; color: #B9C7B4; }
+  .rec p strong, .rec li strong { color: #EDF2EA; }
+  .rec ul { margin: 8px 0 0 18px; }
+  .rec li { margin-bottom: 6px; }
+  .naira { color: #D9A521; font-weight: 700; }
+
+  .signal {
+    margin-top: 56px; background: #1B221B; border: 1px solid #D9A521; border-radius: 14px;
+    padding: 26px 28px;
+  }
+  .signal .kicker { color: #D9A521; }
+  .signal p { font-size: 15px; color: #D9E2D4; max-width: 900px; }
+  footer { margin-top: 64px; font-size: 12px; color: #5D6D58; border-top: 1px solid #263226; padding-top: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Agrocom Design Research</div>
+  <h1>Product Detail &amp; Checkout</h1>
+  <p class="thesis">The winning pattern for agri-commerce is a photo-led product page with a heavyweight seller-trust block, a sticky two-button bar that treats <strong>Make Offer</strong> as a first-class peer of <strong>Buy Now</strong>, and a checkout that decides delivery-vs-pickup before it ever asks about payment.</p>
+  <p class="meta">Flow: Product page → Negotiate / Offer → Cart / Direct buy → Checkout (delivery + payment) → Confirmation &amp; tracking &nbsp;·&nbsp; Sources: Mobbin (iOS, deep mode) &nbsp;·&nbsp; <span>2026-08-02</span></p>
+</header>
+
+<h2>Top examples</h2>
+<p class="sub">Hotlinked from Mobbin. Grouped by stage of the flow — product page, offer/negotiation, checkout, and order tracking.</p>
+
+<div class="grid">
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/abb47e22-025b-44e8-91c0-9392dce9b215"><img src="https://mobbin.com/api/mcp/short/6z6rdhKq" alt="Faire Wholesale product detail" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Product page</span>
+      <div class="app"><a href="https://mobbin.com/screens/abb47e22-025b-44e8-91c0-9392dce9b215">Faire Wholesale</a></div>
+      <p>The gold standard for this flow: full-bleed gallery with dots, seller row at top (avatar · 4.9★ (153) · "50 min" response time), Bestseller badge, price with struck MSRP, and a CTA row that pairs a <em>quantity/unit dropdown</em> ("3 ($9.00)") with a dark chunky Add to cart.</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/f0d9f701-4f21-4eb7-b887-dc9778f9ae3c"><img src="https://mobbin.com/api/mcp/short/aevUZQKa" alt="Grailed listing with seller block and dual CTA" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Product page · trust + dual CTA</span>
+      <div class="app"><a href="https://mobbin.com/screens/f0d9f701-4f21-4eb7-b887-dc9778f9ae3c">Grailed</a></div>
+      <p>Seller trust block done right: avatar, 9 reviews ★, 150 transactions, 82 items for sale, a "⚡ Quick Responder" badge, plus Send a Message / Follow. Sticky bottom bar gives equal weight to <strong>OFFER $656</strong> and <strong>BUY NOW</strong>.</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/7ce6529a-0768-46fa-b82b-7666bf925b19"><img src="https://mobbin.com/api/mcp/short/0ztoQVij" alt="eBay product page with thumbnail strip" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Product page · gallery</span>
+      <div class="app"><a href="https://mobbin.com/screens/7ce6529a-0768-46fa-b82b-7666bf925b19">eBay</a></div>
+      <p>Gallery with "2 of 2" counter, thumbnail strip, an "IN 1 CART" scarcity badge, linked seller with message shortcut, and delivery expectation ("Free shipping · Est. Fri, Feb 20 – Thu, Feb 26") directly under the price.</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/62b44090-760b-455d-ae1a-9731cc3ab849"><img src="https://mobbin.com/api/mcp/short/c8jimrXP" alt="Taobao dense product page" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Product page · dense market style</span>
+      <div class="app"><a href="https://mobbin.com/screens/62b44090-760b-455d-ae1a-9731cc3ab849">Taobao</a></div>
+      <p>Bazaar-density done legibly: huge red price, "200+ sold" social proof, shipping/returns policy rows with icons, and a bottom bar splitting Shop / Chat / Favorite icons from two loud gradient CTAs (Add to cart · Buy with coupon).</p>
+    </div>
+  </div>
+
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/9cf20ca8-3a7b-497b-8acd-0bbf95cb2146"><img src="https://mobbin.com/api/mcp/short/MkdLHVxq" alt="Vestiaire Collective make an offer sheet" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Make offer</span>
+      <div class="app"><a href="https://mobbin.com/screens/9cf20ca8-3a7b-497b-8acd-0bbf95cb2146">Vestiaire Collective</a></div>
+      <p>Offer sheet with three preset chips (5% / 10% / 15% off), the "Recommended" one pre-selected and tinted, a custom-offer field, a Contact Seller escape hatch, and a CTA that echoes the amount: "Send $61 offer".</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/2135e249-6484-4728-959a-7880867f1f7b"><img src="https://mobbin.com/api/mcp/short/3ERrrWLL" alt="Depop make an offer with presets" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Make offer</span>
+      <div class="app"><a href="https://mobbin.com/screens/2135e249-6484-4728-959a-7880867f1f7b">Depop</a></div>
+      <p>Same preset-chip anatomy, green "Recommended" highlight, currency-prefixed input, and crucial expectation-setting microcopy: "An offer is not a payment… you'll have 24 hours to buy at your offer price."</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/e2f05b6f-8461-4d52-829f-924a5a8c58bb"><img src="https://mobbin.com/api/mcp/short/NbA6iALE" alt="eBay negotiation inside chat" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Negotiate in chat</span>
+      <div class="app"><a href="https://mobbin.com/screens/e2f05b6f-8461-4d52-829f-924a5a8c58bb">eBay</a></div>
+      <p>Haggling lives inside the message thread: pinned product card with Buy It Now at top, then structured offer/counteroffer cards ("You sent a counteroffer · $16.00 · 47hr left") interleaved with free-text chat. The closest existing analog to Nigerian market haggling.</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/b458ad9c-35f7-4c0d-98e2-9b0c1628f546"><img src="https://mobbin.com/api/mcp/short/zgRx4DIS" alt="Vinted offer with keypad" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Make offer</span>
+      <div class="app"><a href="https://mobbin.com/screens/b458ad9c-35f7-4c0d-98e2-9b0c1628f546">Vinted</a></div>
+      <p>Numeric keypad up-front, buyer-protection fee disclosed inline under the amount, and rate limiting ("25 offers left for today") to keep lowball spam in check.</p>
+    </div>
+  </div>
+
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/flows/4997f6c8-d37e-43f0-9d42-5908c636ea90"><img src="https://mobbin.com/api/mcp/short/FkE4affw" alt="Uber Eats checkout with delivery pickup toggle" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Checkout</span>
+      <div class="app"><a href="https://mobbin.com/flows/4997f6c8-d37e-43f0-9d42-5908c636ea90">Uber Eats — Checkout flow</a></div>
+      <p>Delivery / Pickup segmented toggle at the very top (with a "Lower fees" nudge on Pickup), map with editable pin, then stacked rows: address, hand-off instructions, phone, and speed options as selectable cards.</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/flows/2f43f591-b8ec-414a-873c-cbd21908a4ba"><img src="https://mobbin.com/api/mcp/short/UwBrvToX" alt="Grab checkout payment and total" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Checkout</span>
+      <div class="app"><a href="https://mobbin.com/flows/2f43f591-b8ec-414a-873c-cbd21908a4ba">Grab — Placing an order</a></div>
+      <p>Emerging-market checkout anatomy: structured address details plus radio-button hand-off instructions ("Drop it off / Hand it to me → meet at doorstep"), payment row, applied offers, and a total that celebrates savings above a full-width green Place Order.</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/flows/17e9e9f5-4fad-4afc-a0f0-66aa668200ba"><img src="https://mobbin.com/api/mcp/short/JTZfYJEA" alt="CVS accordion checkout" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Checkout · steps</span>
+      <div class="app"><a href="https://mobbin.com/flows/17e9e9f5-4fad-4afc-a0f0-66aa668200ba">CVS Health — Checking out</a></div>
+      <p>Accordion checkout: Payment stays visibly locked ("Complete shipping information to enable this step") until Ship To is done, with the order summary pinned below — the user always knows where they are and what it costs.</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/flows/673fc375-1e66-41bc-bf9c-128ef53406b2"><img src="https://mobbin.com/api/mcp/short/Sms839Vl" alt="Chipotle delivery confirmed with tracker" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Confirmation → tracking</span>
+      <div class="app"><a href="https://mobbin.com/flows/673fc375-1e66-41bc-bf9c-128ef53406b2">Chipotle — Delivery confirmed</a></div>
+      <p>Confirmation collapses straight into tracking: giant ETA ("7:06 PM"), map, and a 4-node dot stepper (Order Received → Headed to Pickup → On the Way → Arriving Soon) with a help/chat escape hatch.</p>
+    </div>
+  </div>
+
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/9509b853-f44c-425e-81c0-c6e96efffe2c"><img src="https://mobbin.com/api/mcp/short/HXGDhmqM" alt="Bolt Food vertical order timeline" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Order tracking</span>
+      <div class="app"><a href="https://mobbin.com/screens/9509b853-f44c-425e-81c0-c6e96efffe2c">Bolt Food</a></div>
+      <p>Vertical timestamped timeline with green check nodes — every state change logged in plain sentences ("A courier has been assigned to your order · 2:11pm"). Reads perfectly even on a small, bright screen.</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/0d800f4d-dffa-45fd-90d5-33d80458d1dd"><img src="https://mobbin.com/api/mcp/short/s2uh7EiC" alt="Keeta order tracking with on-time promise" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Order tracking</span>
+      <div class="app"><a href="https://mobbin.com/screens/0d800f4d-dffa-45fd-90d5-33d80458d1dd">Keeta</a></div>
+      <p>Icon-node horizontal stepper, big ETA range with an "On time" chip, and an "On-time Promise" guarantee banner (voucher if late) — trust engineering baked into the tracker.</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/4405ac83-6605-4c72-89ad-52197d6b400b"><img src="https://mobbin.com/api/mcp/short/y8iDsAXF" alt="Glovo tracking with segment bars" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Order tracking</span>
+      <div class="app"><a href="https://mobbin.com/screens/4405ac83-6605-4c72-89ad-52197d6b400b">Glovo</a></div>
+      <p>Warm color-blocked header, huge ETA window ("11:20 – 11:30"), plain-language status line, and labeled segment bars (In progress · Pick up · Delivery). High-contrast and glanceable.</p>
+    </div>
+  </div>
+  <div class="shot">
+    <a class="img" href="https://mobbin.com/screens/fab68a3e-9273-4974-883f-eae2dd349801"><img src="https://mobbin.com/api/mcp/short/WdmHJBfh" alt="Blinkit confirmed order with green header" loading="lazy"></a>
+    <div class="cap">
+      <span class="tag">Order tracking</span>
+      <div class="app"><a href="https://mobbin.com/screens/fab68a3e-9273-4974-883f-eae2dd349801">Blinkit</a></div>
+      <p>Full-bleed green success header ("Order is confirmed · Arriving in 8 minutes") over a map, then stacked cards for delivery details and instructions — a strong template for a one-green brand.</p>
+    </div>
+  </div>
+</div>
+
+<h2>Common patterns</h2>
+<p class="sub">What nearly every strong marketplace product/checkout flow shares.</p>
+<div class="cards">
+  <div class="card">
+    <h3><span class="n">01</span>Edge-to-edge gallery, dots + counter</h3>
+    <p>Photos run full-bleed to the top of the screen with pagination dots or a "2 of 5" counter (eBay, Mercari, Faire, Taobao). Secondary photos live in a thumbnail strip. Chrome (back, share, cart) floats over the image in circular scrims.</p>
+    <span class="src">Faire · eBay · Mercari · Amazon · Taobao</span>
+  </div>
+  <div class="card">
+    <h3><span class="n">02</span>Sticky bottom CTA bar, often dual</h3>
+    <p>The purchase action never scrolls away. C2C marketplaces make it two buttons — Offer + Buy Now (Grailed) or Add to Cart + Buy (Taobao, Hers) — with icon shortcuts (chat, favorite, shop) tucked to the left.</p>
+    <span class="src">Grailed · Taobao · Faire · Hers</span>
+  </div>
+  <div class="card">
+    <h3><span class="n">03</span>Seller trust block = numbers, not vibes</h3>
+    <p>Rating + review count, transaction count, response time, and a verified/quick-responder badge, always adjacent to a message button. Faire even shows "50 min" average response next to the 4.9★.</p>
+    <span class="src">Grailed · Faire · eBay · Etsy</span>
+  </div>
+  <div class="card">
+    <h3><span class="n">04</span>Offer sheets use preset % chips</h3>
+    <p>Three discount presets (5/10/15% or 10/20/30%) with one marked "Recommended" and pre-selected, plus a custom field over a numeric keypad. The CTA repeats the amount ("Send $61 offer"). Expiry (24h/47h) and "an offer is not a payment" copy set expectations.</p>
+    <span class="src">Vestiaire · Depop · Vinted · Grailed · Mercari</span>
+  </div>
+  <div class="card">
+    <h3><span class="n">05</span>Delivery cost &amp; date live on the product page</h3>
+    <p>Shipping fee and estimated delivery window appear under the price before checkout ever starts (eBay's "Free shipping · Est. Fri Feb 20–Thu 26", Mercari's "shipping included", Taobao's policy rows). No cost surprises at the end.</p>
+    <span class="src">eBay · Mercari · Taobao</span>
+  </div>
+  <div class="card">
+    <h3><span class="n">06</span>Checkout = fulfillment first, payment last</h3>
+    <p>Order of operations is universal: mode (delivery/pickup toggle) → address/map pin → hand-off instructions → time window → payment → summary → Place Order. CVS literally locks the payment step until shipping is complete.</p>
+    <span class="src">Uber Eats · Grab · CVS · UNIQLO · Chipotle</span>
+  </div>
+  <div class="card">
+    <h3><span class="n">07</span>Confirmation is a tracker, not a receipt</h3>
+    <p>Best-in-class apps skip the static "thank you" page: confirmation lands directly on a live status screen — big ETA, stepper (3–5 named states), map, courier contact, and a help entry point.</p>
+    <span class="src">Chipotle · Glovo · Keeta · Bolt Food · Rappi</span>
+  </div>
+  <div class="card">
+    <h3><span class="n">08</span>Itemized totals with celebrated savings</h3>
+    <p>Subtotal / delivery fee / service fee / discount rows, with savings called out in color ("Yay, you've saved Rp62.800!"). Fees get explainer tooltips instead of being hidden.</p>
+    <span class="src">Grab · Chipotle · CVS · UNIQLO</span>
+  </div>
+</div>
+
+<h2>What the best apps do differently</h2>
+<div class="diff">
+  <h3><a href="https://mobbin.com/screens/abb47e22-025b-44e8-91c0-9392dce9b215">Faire</a> sells in units, not items</h3>
+  <p>Its CTA row is a quantity dropdown showing the extended price ("3 ($9.00)") beside Add to cart — pricing math done for the buyer before commitment. For produce sold per basket, bag, kg, or crate, this is the pattern to steal: unit picker and computed total inside the sticky bar itself.</p>
+</div>
+<div class="diff">
+  <h3><a href="https://mobbin.com/screens/e2f05b6f-8461-4d52-829f-924a5a8c58bb">eBay</a> merges chat and offers into one thread</h3>
+  <p>Instead of separating "message seller" from "make offer," negotiation happens in a chat where offers render as structured cards with amounts and expiry timers, alongside free text. Haggling stays human, but every committed number is machine-readable and one tap from purchase.</p>
+</div>
+<div class="diff">
+  <h3><a href="https://mobbin.com/screens/9cf20ca8-3a7b-497b-8acd-0bbf95cb2146">Vestiaire</a> coaches the buyer toward acceptable offers</h3>
+  <p>"This item is already priced below average — try our recommendation for your best chance of getting an offer accepted." Guidance plus a highlighted recommended chip converts lowballing into deals that actually close. Mercari goes further and shows the seller's acceptable range outright.</p>
+</div>
+<div class="diff">
+  <h3><a href="https://mobbin.com/screens/0d800f4d-dffa-45fd-90d5-33d80458d1dd">Keeta</a> puts a guarantee inside the tracker</h3>
+  <p>The "On-time Promise" banner (compensation voucher if the order is late) turns the tracking screen from passive status into an active trust contract — exactly the reassurance a first-time farm-goods buyer needs.</p>
+</div>
+<div class="diff">
+  <h3><a href="https://mobbin.com/flows/2f43f591-b8ec-414a-873c-cbd21908a4ba">Grab</a> treats hand-off logistics as first-class UI</h3>
+  <p>Radio options for "Drop it off / Hand it to me / Meet at doorstep" plus free-text driver instructions acknowledge that addresses alone don't work in many markets — landmark-and-instructions delivery is designed, not improvised. Directly transferable to Nigerian addressing reality.</p>
+</div>
+
+<h2>Recommendations for Agrocom</h2>
+<p class="sub">Negotiation-first commerce for the Nigerian market: haggling via chat + Make Offer, unit pricing, delivery vs pickup, and pay-on-delivery as a visible option.</p>
+
+<div class="rec hero">
+  <h3><span class="pill">R1</span>Sticky dual-CTA bar: Make Offer + Buy Now</h3>
+  <p>Nigerian buyers expect to price ("how much last?") before they pay. Follow Grailed: a persistent bottom bar with <strong>Make Offer</strong> (outlined, green) and <strong>Buy <span class="naira">₦25,000</span></strong> (filled #16A34A), price embedded in the button. Chat icon sits to the left of both. Minimum 56px tall buttons, ClashDisplay numerals — thumb-sure with market gloves on.</p>
+</div>
+<div class="rec">
+  <h3><span class="pill">R2</span>Offer sheet with ₦ presets + haggle-in-chat continuity</h3>
+  <p>Bottom sheet à la Vestiaire/Depop: three chips (−5% / −10% / −15% off asking, "Recommended" pre-selected), custom ₦ field over a numeric keypad, CTA reading <strong>"Send <span class="naira">₦22,500</span> offer"</strong>, and copy: "An offer is not a payment. Seller has 24 hours to respond." Every offer and counter-offer then renders as a structured card inside the buyer–seller chat (eBay pattern) with Accept / Counter / Decline — so haggling and checkout share one thread. Always render <span class="naira">₦</span>, never ASCII "N".</p>
+</div>
+<div class="rec">
+  <h3><span class="pill">R3</span>Unit &amp; quantity pricing in the CTA row</h3>
+  <p>Farm goods sell per <strong>paint bucket, bag, basket, kg, crate, tuber</strong>. Steal Faire's pattern: a unit/quantity stepper directly in the sticky bar showing the computed total ("2 bags · <span class="naira">₦51,000</span>"), with per-unit price ("<span class="naira">₦25,500</span>/50kg bag") shown under the headline price like Amazon/CVS's per-oz line. Bulk-tier hints ("5+ bags: <span class="naira">₦24,000</span>/bag") earn the gold accent.</p>
+</div>
+<div class="rec">
+  <h3><span class="pill">R4</span>Seller trust block built for agri-trade</h3>
+  <p>Above the fold, Grailed-style: photo, name, <strong>verified badge</strong> (green check), star rating + count, <strong>completed orders</strong>, <strong>response time</strong> ("replies in ~30 min"), and <strong>location</strong> ("Kaduna · 210 km away") — distance matters for perishables. One-tap Message button beside it. Add harvest date / freshness ("harvested 2 days ago") as an Agrocom-specific trust line.</p>
+</div>
+<div class="rec">
+  <h3><span class="pill">R5</span>Delivery vs pickup as the first checkout decision</h3>
+  <p>Uber Eats-style segmented toggle at the top of checkout: <strong>Delivery / Pickup</strong>, with a fee nudge on pickup ("Save <span class="naira">₦1,500</span> — collect at farm/market stall"). For delivery, follow Grab: landmark-tolerant address form, map pin edit, phone number required, and free-text rider instructions ("Beside the blue kiosk after the junction"). Pickup shows seller's market location, distance, and available hours.</p>
+</div>
+<div class="rec">
+  <h3><span class="pill">R6</span>Pay-on-delivery as a visible, honest payment tier</h3>
+  <p>Payment methods as chunky UNIQLO-style rows: <strong>Pay online</strong> (card / transfer / USSD) and <strong>Pay on delivery</strong> — POD present and unashamed, with an escrow-style reassurance line for online payment ("Money held until you confirm receipt", Keeta's guarantee pattern). Show any POD surcharge inline, never at the final step. Order summary itemizes produce subtotal, delivery fee, and savings from an accepted offer ("You negotiated <span class="naira">₦2,500</span> off").</p>
+</div>
+<div class="rec">
+  <h3><span class="pill">R7</span>Confirmation = tracker with big ETA and named steps</h3>
+  <p>Skip the receipt page. Land on a Blinkit/Glovo-style screen: full-bleed green header, huge ETA in ClashDisplay ("Arriving Tue, 10 Aug"), then a 4-step tracker — <strong>Order confirmed → Seller packing → On the way → Delivered</strong> — as a Bolt Food vertical timeline with timestamps (better for multi-day agri logistics than a same-hour horizontal bar). Courier/seller call + chat buttons, and a "Confirm receipt" action that releases escrow.</p>
+</div>
+
+<div class="signal">
+  <div class="kicker">Design-language signal</div>
+  <p><strong>Numbers are the interface.</strong> In a haggling marketplace, trust lives in legible figures: the price, the offer, the delivery fee, the ETA. Set every ₦ amount and every step-count in ClashDisplay at display sizes on high-contrast surfaces (dark ink on light cards outdoors; single green #16A34A reserved for the one action that moves money; gold only for savings and freshness). Buttons carry their consequence in the label — "Send ₦22,500 offer", "Buy ₦51,000", "Confirm receipt" — so a farmer in full sun, phone at arm's length, always knows exactly what a tap costs and where the deal stands. That is what keeps chunky, utilitarian commerce feeling trustworthy rather than cheap.</p>
+</div>
+
+<footer>Agrocom design research · Product Detail &amp; Checkout · Sources: Mobbin iOS (deep search) · Generated 2026-08-02</footer>
+</div>
+</body>
+</html>
