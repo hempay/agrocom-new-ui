@@ -24,6 +24,7 @@
     --green:#16A34A;           /* THE green. Action, links, verified, success. */
     --green-tint:#E4F3E9;      /* tint of the one green for fills */
     --green-line:#BEE0CA;
+    --green-ink:#0E7A36;       /* readable green ink on the tint */
     --gold:#D9A521;            /* merit + money-advantage only */
     --gold-ink:#8A660E;
     --gold-tint:#F9F0D6;
@@ -127,7 +128,7 @@
 
   /* word chips — states in words, never icons */
   .wc{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4.5px 10px;border-radius:8px;white-space:nowrap}
-  .wc-g{background:var(--green-tint);color:#0E7A36;border:1px solid var(--green-line)}
+  .wc-g{background:var(--green-tint);color:var(--green-ink);border:1px solid var(--green-line)}
   .wc-gold{background:var(--gold-tint);color:var(--gold-ink);border:1px solid var(--gold-line)}
   .wc-grey{background:#EEEBE0;color:var(--meta);border:1px solid var(--line)}
   .wc-sky{background:var(--sky-tint);color:#1F6390;border:1px solid var(--sky-line)}
@@ -162,10 +163,12 @@
   .nav .fab{width:56px;height:56px;border-radius:18px;background:var(--green);color:#fff;display:grid;place-items:center;margin-top:-24px;border:4px solid var(--paper);box-shadow:0 8px 18px rgba(22,163,74,.35)}
   .nav .fabwrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--meta)}
 
-  /* photo stand-ins — photography is evidence; these gradients suggest heaps, sacks, stalls */
+  /* photo tiles — photography is evidence, so every tile carries a real photograph.
+     The .ph-* gradients survive underneath as the load/offline fallback fill; the <img>
+     covers them. Text on photos still sits on a SOLID scrim (.scrimchip / .phlab). */
   .ph{position:relative;overflow:hidden;background:#6B4415}
-  .ph::before{content:"";position:absolute;inset:0;background:radial-gradient(130% 95% at 50% 25%, transparent 52%, rgba(26,16,5,.38) 100%)}
-  .ph::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(112deg, rgba(255,246,220,.06) 0 2px, rgba(20,12,3,.05) 2px 5px, transparent 5px 10px)}
+  .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .ava.ph{display:block}
   .ph-maize{background:linear-gradient(180deg,#8A7A52 0%,rgba(138,122,82,0) 32%),radial-gradient(125% 90% at 50% 102%,#E8B94F 0%,#C08A2E 40%,#8F5F1E 72%,#6B4415 100%)}
   .ph-maize2{background:linear-gradient(180deg,#7E6C44 0%,rgba(126,108,68,0) 30%),radial-gradient(110% 85% at 38% 100%,#DBA83F 0%,#B07C26 45%,#7C4F16 100%)}
   .ph-tomato{background:linear-gradient(180deg,#77503A 0%,rgba(119,80,58,0) 30%),radial-gradient(120% 90% at 50% 102%,#E05A38 0%,#B23A22 45%,#6E2114 100%)}
@@ -228,6 +231,35 @@
   .sticky{margin-top:auto;background:var(--paper);border-top:1.5px solid var(--line);padding:12px 18px 34px;flex-shrink:0}
   .shead{display:flex;align-items:center;gap:12px;padding:8px 18px 12px}
   .shead h1{font-family:var(--fd);font-weight:500;font-synthesis:none;font-size:23px;flex:1}
+
+  /* ================= DARK MODE — a token swap, not a second design =================
+     Only surface / ink / line / tint tokens are re-mapped. THE green (#16A34A) is
+     untouched so the brand reads identically in both modes — it clears 5.1:1 on the
+     dark paper, so every green label, link and "Verified" mark stays AA. Markup,
+     spacing, targets and photographs are byte-for-byte the same as the light frames. */
+  .screen.dark-scr{
+    --canvas:#12150F;          /* night soil canvas — near-black, OLED-friendly */
+    --paper:#1B1F19;           /* elevated band / card paper */
+    --line:#2E352C;            /* hairlines */
+    --ink:#EFF3EA;             /* 16.5:1 on canvas */
+    --ink2:#C9D3C3;            /* 10.8:1 on paper */
+    --meta:#A2AE9D;            /* metadata floor — still 7.3:1 on paper */
+    --green-tint:#15321F;
+    --green-line:#2C5C3C;
+    --green-ink:#6FDD97;       /* 8.3:1 on the dark green tint */
+    --gold-ink:#F0CE72;        /* 9.5:1 on the dark gold tint */
+    --gold-tint:#332813;
+    --gold-line:#59481D;
+    --sky-tint:#132630; --sky-line:#2B4C60;
+    --earth-tint:#2A2117;
+    --red-tint:#3A1D18;
+  }
+  /* the only non-token adjustments dark mode needs */
+  .screen.dark-scr .homebar{background:rgba(255,255,255,.9)}
+  .screen.dark-scr .scrimchip,.screen.dark-scr .phlab{background:rgba(8,6,2,.9)}   /* scrims strengthen against brighter photos */
+  .screen.dark-scr .wc-grey{background:#252C23;color:var(--meta);border-color:var(--line)}
+  .screen.dark-scr .seg{background:#252C23}
+  .screen.dark-scr .sw2{background:#3A4237}
 </style>
 </head>
 <body>
@@ -284,6 +316,7 @@
     <span class="vtag">v2 · research-driven</span>
   </div>
   <p class="bh-thesis"><b>The Market Square</b> — the authority of a village noticeboard, the warmth of a real market. Screens are <b>light, warm and sunlight-legible</b> (this is the light board of the four projects; only the chrome around the phones is dark): near-black text at 16px and up, one confident green, ₦ figures set in ClashDisplay at display size, photography as evidence, and words wherever a tap has consequences. Rebuilt from the completed Mobbin pass — synthesis at <a href="research/index.html">research/index.html</a>. v1 shared a generic card grammar with three sibling boards; v2 is a different architecture: edge-to-edge noticeboard bands instead of floating cards, price-first lockups, chunky labeled pills, drawn 2px icons, zero emoji.</p>
+  <p class="bh-thesis" style="margin-top:10px"><b>On the photography:</b> every produce, market and face image on this board is <b>licensed stock, used as a stand-in so the preview shows real maize instead of a gradient</b>. Production ships <b>owned or licensed in-situ produce photography</b> — the heap on the mat, the open sack, hands holding the yam, shot in daylight at the stall. Never stock, never <code style="background:#2A2415;color:#E5C05C;border-radius:4px;padding:1px 5px;font-size:12.5px">picsum</code> (v1's 24 production fallbacks all died).</p>
 
   <div class="bh-grid">
     <div class="bh-card">
@@ -352,7 +385,7 @@
 <section class="flow">
   <h2 class="d"><span class="no">01</span>Feed — the noticeboard, not the stage</h2>
   <p class="intro">From <a href="research/social-feed.html">research/social-feed.html</a>: Nextdoor-style cards with a place-first context line ("who → post type · where · when"), four structured payloads inside one card shell (photo, poll, market listing, event), labeled chunky actions in words, a camera-first composer sheet, and group pages that put trust metadata before content with one full-width Join.</p>
-  <p class="devi"><b>Intentional deviation:</b> light-first, dark mode later — sunlight legibility is the job, so v1's dark token-swap frame is deliberately dropped from the system.</p>
+  <p class="devi"><b>Intentional deviation:</b> light-first — sunlight legibility is the daytime job, so every screen is designed light and only light. Dark mode exists, but as a derived token swap for evening use, never as the design origin (section <b>07</b>).</p>
   <div class="frames">
 
     <!-- F1 · Home feed -->
@@ -371,13 +404,13 @@
             </div>
           </div>
           <div class="band" style="padding:12px 18px">
-            <div class="r"><div class="ava" style="background:var(--green)">MD</div><div class="inp" style="flex:1;height:48px">Share with Kano farmers…</div><div class="rbtn"><svg class="ic" style="color:var(--green)"><use href="#i-camera"/></svg></div></div>
+            <div class="r"><div class="ava ph" style="background:var(--green)"><img loading="lazy" src="https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=120&amp;h=120&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Musa Danladi"></div><div class="inp" style="flex:1;height:48px">Share with Kano farmers…</div><div class="rbtn"><svg class="ic" style="color:var(--green)"><use href="#i-camera"/></svg></div></div>
           </div>
           <div class="bgap"></div>
           <!-- poll post -->
           <div class="band">
             <div class="r" style="gap:10px;align-items:flex-start">
-              <div class="ava" style="background:var(--earth)">AG</div>
+              <div class="ava ph" style="background:var(--earth)"><img loading="lazy" src="https://images.unsplash.com/photo-1463453091185-61582044d556?w=120&amp;h=120&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Adamu Garba"></div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:15.5px"><b>Adamu Garba</b> <span style="color:var(--green);font-weight:700;font-size:13.5px">→ Question</span></div>
                 <div class="m13">Ungogo, Kano · Maize Growers · 2h</div>
@@ -399,7 +432,7 @@
           <!-- market-listing post (crops at screen edge) -->
           <div class="band" style="border-bottom:0">
             <div class="r" style="gap:10px;align-items:flex-start">
-              <div class="ava" style="background:#5E7A3A">MN</div>
+              <div class="ava ph" style="background:#5E7A3A"><img loading="lazy" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=120&amp;h=120&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Mama Nkechi"></div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:15.5px"><b>Mama Nkechi</b> <span style="color:var(--green);font-weight:700;font-size:13.5px">→ For sale</span></div>
                 <div class="m13">Yankaba Market, Kano · 4h</div>
@@ -408,7 +441,7 @@
             </div>
             <div style="font-size:16px;margin-top:10px">Dried maize, moisture-tested and bagged. 15 bags left before Wednesday market.</div>
             <div class="card r" style="margin-top:11px;padding:10px;gap:12px">
-              <div class="ph ph-maize" style="width:74px;height:74px;border-radius:11px;flex-shrink:0"></div>
+              <div class="ph ph-maize" style="width:74px;height:74px;border-radius:11px;flex-shrink:0"><img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=200&amp;h=200&amp;fit=crop&amp;q=80" alt="Dried maize cobs"></div>
               <div style="flex:1;min-width:0">
                 <div class="pl"><span class="n d" style="font-size:21px">₦25,500</span><span class="uchip">/ bag</span></div>
                 <div style="font-size:14.5px;font-weight:600;margin-top:2px">Maize, dried — 100kg bag</div>
@@ -441,11 +474,12 @@
             <span class="b pri sm" style="padding:0 22px;height:42px">Post</span>
           </div>
           <div class="band" style="padding:12px 18px">
-            <div class="r"><div class="ava" style="background:var(--green)">MD</div>
+            <div class="r"><div class="ava ph" style="background:var(--green)"><img loading="lazy" src="https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=120&amp;h=120&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Musa Danladi"></div>
               <span class="chip" style="height:38px"><svg class="ic s"><use href="#i-users"/></svg>To: Kano · Maize Growers<svg class="ic s"><use href="#i-chevd"/></svg></span>
             </div>
             <div style="font-size:18px;line-height:1.5;margin-top:14px">Harvested 40 baskets this morning. Who has cold-chain transport to Abuja this week?</div>
             <div class="ph ph-tomato" style="height:210px;border-radius:16px;margin-top:14px">
+              <img loading="lazy" src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=700&amp;h=420&amp;fit=crop&amp;q=80" alt="Freshly harvested tomatoes">
               <span class="scrimchip" style="left:10px;bottom:10px">Cover</span>
               <span style="position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:3"><svg class="ic s"><use href="#i-x"/></svg></span>
             </div>
@@ -470,6 +504,7 @@
     <div>
       <div class="phone"><div class="screen"><div class="island"></div>
         <div class="ph ph-market" style="height:196px;flex-shrink:0">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=760&amp;h=400&amp;fit=crop&amp;q=80" alt="Market stall with produce laid out">
           <span style="position:absolute;top:58px;left:16px;width:44px;height:44px;border-radius:14px;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:4"><svg class="ic"><use href="#i-back"/></svg></span>
           <span class="scrimchip" style="left:16px;bottom:12px;background:rgba(26,18,7,.85);color:#F5D77E"><svg class="ic" style="width:14px;height:14px;fill:#D9A521;stroke:#D9A521"><use href="#i-star"/></svg>Group of the month</span>
         </div>
@@ -493,7 +528,7 @@
               <div class="m13" style="margin-top:5px">Agrocom market data · updated today</div>
             </div>
             <div class="r" style="gap:10px;margin-top:13px;align-items:flex-start">
-              <div class="ava" style="width:38px;height:38px;font-size:13px;background:#2E5E7A">NO</div>
+              <div class="ava ph" style="width:38px;height:38px;background:#2E5E7A"><img loading="lazy" src="https://images.unsplash.com/photo-1507152832244-10d45c7eda57?w=120&amp;h=120&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Ngozi Okeke"></div>
               <div style="flex:1"><div style="font-size:15px"><b>Ngozi Okeke</b></div><div class="m13">Jos Road, Kano · 1h</div></div>
             </div>
             <div style="font-size:15.5px;margin-top:8px">Basket price don rise small — buyers dey rush before the rain…</div>
@@ -528,10 +563,10 @@
           </div>
           <div class="band" style="padding:12px 18px 14px">
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px">
-              <div><div class="ph ph-maize" style="height:74px;border-radius:12px"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Grains</div></div>
-              <div><div class="ph ph-yam" style="height:74px;border-radius:12px"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Tubers</div></div>
-              <div><div class="ph ph-leaf" style="height:74px;border-radius:12px"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Vegetables</div></div>
-              <div><div class="ph ph-egg" style="height:74px;border-radius:12px"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Poultry</div></div>
+              <div><div class="ph ph-maize" style="height:74px;border-radius:12px"><img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=200&amp;h=200&amp;fit=crop&amp;q=80" alt="Maize cobs"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Grains</div></div>
+              <div><div class="ph ph-yam" style="height:74px;border-radius:12px"><img loading="lazy" src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=200&amp;h=200&amp;fit=crop&amp;q=80" alt="Tubers"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Tubers</div></div>
+              <div><div class="ph ph-leaf" style="height:74px;border-radius:12px"><img loading="lazy" src="https://images.unsplash.com/photo-1471193945509-9ad0617afabf?w=200&amp;h=200&amp;fit=crop&amp;q=80" alt="Market vegetables"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Vegetables</div></div>
+              <div><div class="ph ph-egg" style="height:74px;border-radius:12px"><img loading="lazy" src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=200&amp;h=200&amp;fit=crop&amp;q=80" alt="Hens"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Poultry</div></div>
             </div>
           </div>
           <div class="bgap"></div>
@@ -539,24 +574,24 @@
             <div class="r" style="margin-bottom:11px"><b style="font-size:16.5px;flex:1">Near you today</b><span class="m13">Within 25 km</span></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px">
               <div>
-                <div class="ph ph-maize" style="height:138px;border-radius:14px"><span class="scrimchip" style="right:8px;top:8px;font-size:11px;padding:4px 8px">2h</span></div>
+                <div class="ph ph-maize" style="height:138px;border-radius:14px"><img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400&amp;h=300&amp;fit=crop&amp;q=80" alt="Dried maize, 100kg bag"><span class="scrimchip" style="right:8px;top:8px;font-size:11px;padding:4px 8px">2h</span></div>
                 <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦25,500</span><span class="uchip">/ bag</span></div>
                 <div style="font-size:14.5px;font-weight:600;margin-top:2px">Maize, dried — 100kg</div>
                 <div class="m13" style="margin-top:2px"><span style="color:var(--green);font-weight:700">✓ Verified</span> · 12 km</div>
               </div>
               <div>
-                <div class="ph ph-tomato" style="height:138px;border-radius:14px"><span class="scrimchip" style="right:8px;top:8px;font-size:11px;padding:4px 8px">1h</span></div>
+                <div class="ph ph-tomato" style="height:138px;border-radius:14px"><img loading="lazy" src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&amp;h=300&amp;fit=crop&amp;q=80" alt="Fresh Roma tomatoes"><span class="scrimchip" style="right:8px;top:8px;font-size:11px;padding:4px 8px">1h</span></div>
                 <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦13,500</span><span class="uchip">/ basket</span></div>
                 <div style="font-size:14.5px;font-weight:600;margin-top:2px">Tomatoes, fresh Roma</div>
                 <div class="m13" style="margin-top:2px">Yankaba · 3 km</div>
               </div>
               <div>
-                <div class="ph ph-yam" style="height:138px;border-radius:14px"></div>
+                <div class="ph ph-yam" style="height:138px;border-radius:14px"><img loading="lazy" src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&amp;h=300&amp;fit=crop&amp;q=80" alt="Puna yam tubers"></div>
                 <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦850</span><span class="uchip">/ tuber</span></div>
                 <div style="font-size:14.5px;font-weight:600;margin-top:2px">Yam, Puna — big size</div>
               </div>
               <div>
-                <div class="ph ph-sack" style="height:138px;border-radius:14px"></div>
+                <div class="ph ph-sack" style="height:138px;border-radius:14px"><img loading="lazy" src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&amp;h=300&amp;fit=crop&amp;q=80" alt="Local parboiled rice"></div>
                 <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦62,000</span><span class="uchip">/ 50kg sack</span></div>
                 <div style="font-size:14.5px;font-weight:600;margin-top:2px">Rice, local — parboiled</div>
               </div>
@@ -591,12 +626,13 @@
             <span style="font-size:14.5px;font-weight:600;color:#0E7A36;line-height:1.4">Shoot in daylight. Show the heap or the open sack.</span>
           </div>
           <div class="ph ph-maize" style="height:250px;border-radius:16px;margin-top:14px">
+            <img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=700&amp;h=500&amp;fit=crop&amp;q=80" alt="Dried maize cobs, cover photo">
             <span class="scrimchip" style="left:10px;bottom:10px">Cover</span>
             <span style="position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:3"><svg class="ic s"><use href="#i-x"/></svg></span>
           </div>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px">
-            <div class="ph ph-maize2" style="height:96px;border-radius:13px"></div>
-            <div class="ph ph-sack" style="height:96px;border-radius:13px"></div>
+            <div class="ph ph-maize2" style="height:96px;border-radius:13px"><img loading="lazy" src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=260&amp;h=260&amp;fit=crop&amp;q=80" alt="Maize plants in the field"></div>
+            <div class="ph ph-sack" style="height:96px;border-radius:13px"><img loading="lazy" src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=260&amp;h=260&amp;fit=crop&amp;q=80" alt="Heaped grain"></div>
             <div style="height:96px;border-radius:13px;border:2px dashed var(--green);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--green);font-size:13px;font-weight:700"><svg class="ic"><use href="#i-plus"/></svg>Add</div>
           </div>
           <div class="m13" style="margin-top:10px">Up to 8 photos · first photo is your cover · drag to reorder</div>
@@ -660,6 +696,7 @@
     <div>
       <div class="phone"><div class="screen"><div class="island"></div>
         <div class="ph ph-maize" style="height:252px;flex-shrink:0">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=760&amp;h=520&amp;fit=crop&amp;q=80" alt="Dried maize, 100kg bag">
           <span style="position:absolute;top:58px;left:16px;width:44px;height:44px;border-radius:14px;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:4"><svg class="ic"><use href="#i-back"/></svg></span>
           <span style="position:absolute;top:58px;right:16px;width:44px;height:44px;border-radius:14px;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:4"><svg class="ic"><use href="#i-share"/></svg></span>
           <span class="scrimchip" style="right:12px;bottom:12px">1 / 5</span>
@@ -667,10 +704,10 @@
         <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
           <div class="band" style="border-top:0;padding:12px 18px">
             <div class="r" style="gap:8px;margin-bottom:10px">
-              <div class="ph ph-maize" style="width:52px;height:52px;border-radius:10px;border:2px solid var(--green)"></div>
-              <div class="ph ph-maize2" style="width:52px;height:52px;border-radius:10px"></div>
-              <div class="ph ph-sack" style="width:52px;height:52px;border-radius:10px"></div>
-              <div class="ph ph-market" style="width:52px;height:52px;border-radius:10px"></div>
+              <div class="ph ph-maize" style="width:52px;height:52px;border-radius:10px;border:2px solid var(--green)"><img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=140&amp;h=140&amp;fit=crop&amp;q=80" alt="Maize cobs, close"></div>
+              <div class="ph ph-maize2" style="width:52px;height:52px;border-radius:10px"><img loading="lazy" src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=140&amp;h=140&amp;fit=crop&amp;q=80" alt="Maize plants in the field"></div>
+              <div class="ph ph-sack" style="width:52px;height:52px;border-radius:10px"><img loading="lazy" src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=140&amp;h=140&amp;fit=crop&amp;q=80" alt="Heaped grain in the sack"></div>
+              <div class="ph ph-market" style="width:52px;height:52px;border-radius:10px"><img loading="lazy" src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=140&amp;h=140&amp;fit=crop&amp;crop=entropy&amp;q=80" alt="The stall at Yankaba Market"></div>
             </div>
             <div class="d" style="font-size:21px;line-height:1.25">Maize, dried — 100kg bag</div>
             <div class="r" style="gap:9px;margin-top:7px;flex-wrap:wrap">
@@ -686,7 +723,7 @@
           <div class="bgap"></div>
           <div class="band">
             <div class="r" style="gap:12px">
-              <div class="ava" style="background:#5E7A3A;width:48px;height:48px">MN</div>
+              <div class="ava ph" style="background:#5E7A3A;width:48px;height:48px"><img loading="lazy" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=120&amp;h=120&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Mama Nkechi"></div>
               <div style="flex:1;min-width:0">
                 <div class="r" style="gap:7px"><b style="font-size:15.5px">Mama Nkechi</b><span class="wc wc-g">✓ Verified seller</span></div>
                 <div class="m13" style="margin-top:3px">★ 4.8 (214) · 312 orders · replies in ~30 min</div>
@@ -790,8 +827,13 @@
             <span style="background:rgba(255,255,255,.18);border-radius:8px;padding:4.5px 10px;font-size:12px;font-weight:700">Order #4821</span>
             <span style="background:rgba(255,255,255,.18);border-radius:8px;padding:4.5px 10px;font-size:12px;font-weight:700">Paid — held in escrow</span>
           </div>
-          <div class="d" style="font-size:27px;margin-top:12px">Arriving Tue, 12 Aug</div>
-          <div style="font-size:14.5px;opacity:.92;margin-top:3px">Maize, dried × 2 bags · ₦47,400 · Mama Nkechi</div>
+          <div class="r" style="gap:13px;margin-top:12px;align-items:flex-start">
+            <div style="flex:1;min-width:0">
+              <div class="d" style="font-size:27px">Arriving Tue, 12 Aug</div>
+              <div style="font-size:14.5px;opacity:.92;margin-top:3px">Maize, dried × 2 bags · ₦47,400 · Mama Nkechi</div>
+            </div>
+            <div class="ph ph-maize" style="width:58px;height:58px;border-radius:12px;flex-shrink:0;border:2px solid rgba(255,255,255,.55)"><img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=160&amp;h=160&amp;fit=crop&amp;q=80" alt="Dried maize you ordered"></div>
+          </div>
         </div>
         <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:18px 18px 0">
           <div class="tl">
@@ -834,22 +876,22 @@
           </div>
           <div class="band" style="flex:1;padding:2px 18px;border-bottom:0">
             <div class="lrow">
-              <div class="ava" style="width:52px;height:52px;background:#5E7A3A">MN</div>
+              <div class="ava ph" style="width:52px;height:52px;background:#5E7A3A"><img loading="lazy" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=120&amp;h=120&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Mama Nkechi"></div>
               <b>Mama Nkechi<small><svg class="ic" style="width:15px;height:15px;color:var(--green);vertical-align:-3px;stroke-width:2.4"><use href="#i-checks"/></svg> You: Offered ₦45,900 for 2 bags</small></b>
               <div style="text-align:right"><div class="m13">11:02</div><span class="wc wc-g" style="margin-top:4px">Accepted</span></div>
             </div>
             <div class="lrow">
-              <div class="ava" style="width:52px;height:52px;background:var(--earth)">AB</div>
+              <div class="ava ph" style="width:52px;height:52px;background:var(--earth)"><img loading="lazy" src="https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=120&amp;h=120&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Alhaji Bala"></div>
               <b>Alhaji Bala<small><svg class="ic" style="width:14px;height:14px;vertical-align:-2.5px"><use href="#i-mic"/></svg> Voice note · 0:42</small></b>
               <div style="text-align:right"><div class="m13">10:48</div><span style="display:inline-flex;min-width:24px;height:24px;border-radius:12px;background:var(--green);color:#fff;font-size:12.5px;font-weight:700;align-items:center;justify-content:center;margin-top:4px;padding:0 7px">2</span></div>
             </div>
             <div class="lrow">
-              <div class="ava" style="width:52px;height:52px;background:#B0642A">RP</div>
+              <div class="ava ph" style="width:52px;height:52px;background:#B0642A"><img loading="lazy" src="https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=120&amp;h=120&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Rekiya"></div>
               <b>Rekiya Poultry<small>Countered — ₦4,500 / crate × 4</small></b>
               <div style="text-align:right"><div class="m13">9:15</div><span class="wc wc-gold" style="margin-top:4px">Pending</span></div>
             </div>
             <div class="lrow">
-              <div class="ava" style="width:52px;height:52px;background:#2E5E7A">TG</div>
+              <div class="ava ph" style="width:52px;height:52px;background:#2E5E7A"><img loading="lazy" src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=120&amp;h=120&amp;fit=crop&amp;crop=entropy&amp;q=80" alt="Tomato Growers of Kano"></div>
               <b>Tomato Growers of Kano<small>Ngozi: Basket price don rise small…</small></b>
               <div class="m13">Yesterday</div>
             </div>
@@ -877,7 +919,7 @@
         <div class="band" style="border-top:0;padding:58px 16px 10px;flex-shrink:0">
           <div class="r" style="gap:10px">
             <svg class="ic"><use href="#i-back"/></svg>
-            <div class="ava" style="width:42px;height:42px;background:#5E7A3A;font-size:14px">MN</div>
+            <div class="ava ph" style="width:42px;height:42px;background:#5E7A3A"><img loading="lazy" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=120&amp;h=120&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Mama Nkechi"></div>
             <div style="flex:1;min-width:0"><b style="font-size:16px">Mama Nkechi</b><div class="m13"><span style="color:var(--green);font-weight:700">✓ Verified</span> · replies in ~10 min</div></div>
             <svg class="ic"><use href="#i-phone"/></svg>
           </div>
@@ -885,7 +927,7 @@
         <!-- pinned produce contract card -->
         <div class="band" style="padding:10px 16px;flex-shrink:0;box-shadow:0 4px 10px rgba(30,24,10,.06)">
           <div class="r" style="gap:11px">
-            <div class="ph ph-maize" style="width:52px;height:52px;border-radius:10px"></div>
+            <div class="ph ph-maize" style="width:52px;height:52px;border-radius:10px"><img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=140&amp;h=140&amp;fit=crop&amp;q=80" alt="Dried maize, 100kg bag"></div>
             <div style="flex:1;min-width:0">
               <b style="font-size:14.5px">Maize, dried — 100kg bag</b>
               <div class="pl" style="margin-top:2px"><span class="n d" style="font-size:17px">₦25,500</span><span class="uchip" style="font-size:11px;padding:2px 7px">/ bag</span><span class="wc wc-g" style="font-size:11px;padding:3px 8px">In stock</span></div>
@@ -1073,7 +1115,7 @@
         <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
           <div class="band" style="border-top:0;padding:10px 18px 16px">
             <div class="r" style="gap:14px">
-              <div class="ava" style="width:66px;height:66px;background:var(--green);font-size:22px">MD</div>
+              <div class="ava ph" style="width:66px;height:66px;background:var(--green)"><img loading="lazy" src="https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=200&amp;h=200&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Musa Danladi"></div>
               <div style="flex:1">
                 <div class="d" style="font-size:22px">Musa Danladi</div>
                 <div class="m13" style="font-size:14px">Maize &amp; poultry · Ungogo, Kano</div>
@@ -1111,8 +1153,176 @@
   </div>
 </section>
 
+<!-- =============================== 07 · DARK MODE =============================== -->
+<section class="flow">
+  <h2 class="d"><span class="no">07</span>Dark mode — the same screens, one token swap</h2>
+  <p class="intro">Agrocom is designed <b>light-first and only light-first</b>: the daytime job is a phone held at arm's length in Kano sun, and that job is won by warm off-white paper, near-black ink and solid scrims — not by a dark theme. Dark mode is therefore a <b>derived</b> mode, not a second design. It serves the other half of the day: evening price-checking after the market closes, chat with a buyer at night, and the battery an OLED screen gives back when most of it is off. The three frames below are the <b>same markup</b> as the Shop home (section 02), the Product page (section 03) and the Wallet (section 05) — copied verbatim, nothing re-laid out, no component forked. A single <code style="background:#2A2415;color:#A9DFAF;border-radius:4px;padding:1px 5px;font-size:12.5px">.dark-scr</code> class on the screen element re-maps the surface, ink, line and tint custom properties and stops there.</p>
+  <p class="devi"><b>What deliberately does <em>not</em> move:</b> the one green <b>#16A34A</b> is byte-identical in both modes — it clears 5.1:1 as text on the dark paper, so every link, "✓ Verified", nav-active label and CTA fill keeps the brand exactly where it is. Ink 16.5:1, secondary 10.8:1, metadata still 7.3:1 — the sunlight contrast floor survives the swap. Photographs are untouched: they carry their own light, so only the <b>scrims strengthen</b> (.82 → .90 alpha) because the images now read brighter against a black surround.</p>
+  <div class="frames">
+
+    <!-- D1 · Marketplace grid — dark -->
+    <div>
+      <div class="phone"><div class="screen dark-scr"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:8px 18px 12px">
+            <div class="r"><span class="d" style="font-size:24px;flex:1">Shop</span><span class="chip" style="height:38px"><svg class="ic s" style="color:var(--green)"><use href="#i-pin"/></svg>Yankaba<svg class="ic s"><use href="#i-chevd"/></svg></span></div>
+            <div class="inp" style="margin-top:11px"><svg class="ic s"><use href="#i-search"/></svg>Search produce, sellers…<svg class="ic s" style="margin-left:auto;color:var(--green)"><use href="#i-camera"/></svg></div>
+            <div class="r" style="gap:9px;margin-top:10px">
+              <span class="b pri sm" style="flex:1"><svg class="ic s"><use href="#i-camera"/></svg>Sell</span>
+              <span class="b plain sm" style="flex:1;font-family:'Inter';font-weight:700;font-size:14.5px">Categories</span>
+            </div>
+          </div>
+          <div class="band" style="padding:12px 18px 14px">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px">
+              <div><div class="ph ph-maize" style="height:74px;border-radius:12px"><img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=200&amp;h=200&amp;fit=crop&amp;q=80" alt="Maize cobs"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Grains</div></div>
+              <div><div class="ph ph-yam" style="height:74px;border-radius:12px"><img loading="lazy" src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=200&amp;h=200&amp;fit=crop&amp;q=80" alt="Tubers"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Tubers</div></div>
+              <div><div class="ph ph-leaf" style="height:74px;border-radius:12px"><img loading="lazy" src="https://images.unsplash.com/photo-1471193945509-9ad0617afabf?w=200&amp;h=200&amp;fit=crop&amp;q=80" alt="Market vegetables"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Vegetables</div></div>
+              <div><div class="ph ph-egg" style="height:74px;border-radius:12px"><img loading="lazy" src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=200&amp;h=200&amp;fit=crop&amp;q=80" alt="Hens"></div><div style="font-size:12.5px;font-weight:700;text-align:center;margin-top:5px">Poultry</div></div>
+            </div>
+          </div>
+          <div class="bgap"></div>
+          <div class="band" style="border-bottom:0;flex:1">
+            <div class="r" style="margin-bottom:11px"><b style="font-size:16.5px;flex:1">Near you today</b><span class="m13">Within 25 km</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px">
+              <div>
+                <div class="ph ph-maize" style="height:138px;border-radius:14px"><img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400&amp;h=300&amp;fit=crop&amp;q=80" alt="Dried maize, 100kg bag"><span class="scrimchip" style="right:8px;top:8px;font-size:11px;padding:4px 8px">2h</span></div>
+                <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦25,500</span><span class="uchip">/ bag</span></div>
+                <div style="font-size:14.5px;font-weight:600;margin-top:2px">Maize, dried — 100kg</div>
+                <div class="m13" style="margin-top:2px"><span style="color:var(--green);font-weight:700">✓ Verified</span> · 12 km</div>
+              </div>
+              <div>
+                <div class="ph ph-tomato" style="height:138px;border-radius:14px"><img loading="lazy" src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&amp;h=300&amp;fit=crop&amp;q=80" alt="Fresh Roma tomatoes"><span class="scrimchip" style="right:8px;top:8px;font-size:11px;padding:4px 8px">1h</span></div>
+                <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦13,500</span><span class="uchip">/ basket</span></div>
+                <div style="font-size:14.5px;font-weight:600;margin-top:2px">Tomatoes, fresh Roma</div>
+                <div class="m13" style="margin-top:2px">Yankaba · 3 km</div>
+              </div>
+              <div>
+                <div class="ph ph-yam" style="height:138px;border-radius:14px"><img loading="lazy" src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&amp;h=300&amp;fit=crop&amp;q=80" alt="Puna yam tubers"></div>
+                <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦850</span><span class="uchip">/ tuber</span></div>
+                <div style="font-size:14.5px;font-weight:600;margin-top:2px">Yam, Puna — big size</div>
+              </div>
+              <div>
+                <div class="ph ph-sack" style="height:138px;border-radius:14px"><img loading="lazy" src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&amp;h=300&amp;fit=crop&amp;q=80" alt="Local parboiled rice"></div>
+                <div class="pl" style="margin-top:8px"><span class="n d" style="font-size:20px">₦62,000</span><span class="uchip">/ 50kg sack</span></div>
+                <div style="font-size:14.5px;font-weight:600;margin-top:2px">Rice, local — parboiled</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="nav">
+          <a><svg class="ic"><use href="#i-home"/></svg>Home</a>
+          <a class="on"><svg class="ic"><use href="#i-shop"/></svg>Shop</a>
+          <span class="fabwrap"><span class="fab"><svg class="ic l"><use href="#i-plus"/></svg></span>Post</span>
+          <a><svg class="ic"><use href="#i-chat"/></svg>Chat</a>
+          <a><svg class="ic"><use href="#i-user"/></svg>Profile</a>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Marketplace · dark</b> — byte-identical to the Shop home frame; only the tokens moved</div>
+    </div>
+
+    <!-- D2 · Product page + sticky dual CTA — dark -->
+    <div>
+      <div class="phone"><div class="screen dark-scr"><div class="island"></div>
+        <div class="ph ph-maize" style="height:252px;flex-shrink:0">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=760&amp;h=520&amp;fit=crop&amp;q=80" alt="Dried maize, 100kg bag">
+          <span style="position:absolute;top:58px;left:16px;width:44px;height:44px;border-radius:14px;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:4"><svg class="ic"><use href="#i-back"/></svg></span>
+          <span style="position:absolute;top:58px;right:16px;width:44px;height:44px;border-radius:14px;background:rgba(26,18,7,.82);color:#FFF9EC;display:grid;place-items:center;z-index:4"><svg class="ic"><use href="#i-share"/></svg></span>
+          <span class="scrimchip" style="right:12px;bottom:12px">1 / 5</span>
+        </div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:12px 18px">
+            <div class="r" style="gap:8px;margin-bottom:10px">
+              <div class="ph ph-maize" style="width:52px;height:52px;border-radius:10px;border:2px solid var(--green)"><img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=140&amp;h=140&amp;fit=crop&amp;q=80" alt="Maize cobs, close"></div>
+              <div class="ph ph-maize2" style="width:52px;height:52px;border-radius:10px"><img loading="lazy" src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=140&amp;h=140&amp;fit=crop&amp;q=80" alt="Maize plants in the field"></div>
+              <div class="ph ph-sack" style="width:52px;height:52px;border-radius:10px"><img loading="lazy" src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=140&amp;h=140&amp;fit=crop&amp;q=80" alt="Heaped grain in the sack"></div>
+              <div class="ph ph-market" style="width:52px;height:52px;border-radius:10px"><img loading="lazy" src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=140&amp;h=140&amp;fit=crop&amp;crop=entropy&amp;q=80" alt="The stall at Yankaba Market"></div>
+            </div>
+            <div class="d" style="font-size:21px;line-height:1.25">Maize, dried — 100kg bag</div>
+            <div class="r" style="gap:9px;margin-top:7px;flex-wrap:wrap">
+              <span class="pl"><span class="n d" style="font-size:30px">₦25,500</span><span class="uchip">/ bag</span></span>
+              <span class="wc wc-g">Negotiable</span>
+            </div>
+            <div class="m13" style="margin-top:4px">≈ ₦510 / kg · minimum order 2 bags</div>
+            <div class="r" style="gap:8px;margin-top:9px;flex-wrap:wrap">
+              <span class="wc wc-gold">Harvested 2 days ago</span>
+              <span class="wc wc-gold">5+ bags: ₦24,000 / bag</span>
+            </div>
+          </div>
+          <div class="bgap"></div>
+          <div class="band">
+            <div class="r" style="gap:12px">
+              <div class="ava ph" style="background:#5E7A3A;width:48px;height:48px"><img loading="lazy" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=120&amp;h=120&amp;fit=crop&amp;crop=faces&amp;q=80" alt="Mama Nkechi"></div>
+              <div style="flex:1;min-width:0">
+                <div class="r" style="gap:7px"><b style="font-size:15.5px">Mama Nkechi</b><span class="wc wc-g">✓ Verified seller</span></div>
+                <div class="m13" style="margin-top:3px">★ 4.8 (214) · 312 orders · replies in ~30 min</div>
+                <div class="m13">Yankaba Market, Kano · 12 km away</div>
+              </div>
+              <span class="b out sm" style="font-family:'Inter';font-weight:700;font-size:13.5px;height:40px;padding:0 14px">Message</span>
+            </div>
+            <div class="r" style="gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+              <svg class="ic" style="color:var(--green)"><use href="#i-truck"/></svg>
+              <div style="flex:1;font-size:14.5px;font-weight:600">Delivery ₦1,500 — est. Tue 12 Aug<small style="display:block;font-size:13px;color:var(--meta);font-weight:500;margin-top:1px">Or free pickup at Yankaba Market</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="r" style="gap:10px;margin-bottom:10px">
+            <div class="card r" style="height:48px;padding:0 14px;gap:16px;border-radius:13px"><b class="d" style="font-size:18px;color:var(--meta)">−</b><b style="font-size:15px">2 bags</b><b class="d" style="font-size:18px;color:var(--green)">+</b></div>
+            <span class="m13" style="margin-left:auto">2 bags = <b style="color:var(--ink)">₦51,000</b></span>
+          </div>
+          <div class="r" style="gap:10px">
+            <div class="b out" style="flex:1">Make offer</div>
+            <div class="b pri" style="flex:1.2">Buy ₦51,000</div>
+          </div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Product · dark</b> — the sticky Make offer + Buy ₦51,000 bar, unchanged</div>
+    </div>
+
+    <!-- D3 · Wallet — dark -->
+    <div>
+      <div class="phone"><div class="screen dark-scr"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div class="shead"><div class="rbtn"><svg class="ic"><use href="#i-back"/></svg></div><h1>Wallet</h1><span style="font-size:14.5px;font-weight:700;color:var(--green)">Receipts</span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 18px">
+          <div style="background:var(--green);border-radius:20px;padding:20px;color:#fff">
+            <div style="font-size:13px;font-weight:600;opacity:.9">Wallet balance</div>
+            <div class="d" style="font-size:46px;font-variant-numeric:tabular-nums;line-height:1.1;margin-top:2px">₦86,400</div>
+            <span style="display:inline-flex;background:rgba(255,255,255,.18);border-radius:9px;padding:5px 11px;font-size:12.5px;font-weight:700;margin-top:10px">₦47,400 held in escrow for order #4821</span>
+            <div class="r" style="gap:10px;margin-top:16px">
+              <span class="b sm" style="flex:1;height:52px;background:#fff;color:var(--green);font-size:16px">Add money</span>
+              <span class="b sm" style="flex:1;height:52px;background:#fff;color:var(--green);font-size:16px">Pay seller</span>
+            </div>
+          </div>
+          <div class="m13" style="font-weight:700;margin:16px 0 2px">TODAY</div>
+          <div>
+            <div class="lrow" style="align-items:flex-start">
+              <div style="flex:1"><b style="font-size:15px">Paid Mama Nkechi — maize, 2 bags</b><small>11:02 AM · Order #4821 · <u>Share receipt</u></small></div>
+              <div style="text-align:right"><b style="font-size:15.5px;font-variant-numeric:tabular-nums">−₦47,400</b><div style="margin-top:3px"><span class="wc wc-gold">In escrow</span></div><div class="m13" style="margin-top:4px">Balance ₦86,400</div></div>
+            </div>
+          </div>
+          <div class="m13" style="font-weight:700;margin:8px 0 2px">YESTERDAY</div>
+          <div>
+            <div class="lrow" style="align-items:flex-start;border-top:0">
+              <div style="flex:1"><b style="font-size:15px">Alhaji Bala paid you — eggs, 4 crates</b><small>4:12 PM · Order #4788</small></div>
+              <div style="text-align:right"><b style="font-size:15.5px;color:var(--green);font-variant-numeric:tabular-nums">+₦19,200</b><div style="margin-top:3px"><span class="wc wc-g">Released</span></div><div class="m13" style="margin-top:4px">Balance ₦133,800</div></div>
+            </div>
+            <div class="lrow" style="align-items:flex-start">
+              <div style="flex:1"><b style="font-size:15px">Added money — transfer from Wema</b><small>9:30 AM</small></div>
+              <div style="text-align:right"><b style="font-size:15.5px;color:var(--green);font-variant-numeric:tabular-nums">+₦30,000</b><div class="m13" style="margin-top:4px">Balance ₦114,600</div></div>
+            </div>
+          </div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Wallet · dark</b> — the same green cashbox card; ₦ figures gain contrast on black</div>
+    </div>
+
+  </div>
+</section>
+
 <footer>
-  <b>Agrocom — Redesign Preview v2 · The Market Square.</b> Rebuilt from the completed Mobbin research pass — synthesis and the five flow reports live at <a href="research/index.html">research/index.html</a>. Sixteen frames, one system: one green #16A34A, gold for merit and savings only, sky-blue for weather only, every ₦ the real U+20A6 glyph with separators, words wherever a tap has consequences, ≥48px targets, solid scrims on photos, place-first context lines. Photo tiles here are designed gradient stand-ins — production uses unfiltered in-situ produce photography (heaps, sacks, hands), never stock, never picsum. v1 preserved at index-v1-backup.html.
+  <b>Agrocom — Redesign Preview v2 · The Market Square.</b> Rebuilt from the completed Mobbin research pass — synthesis and the five flow reports live at <a href="research/index.html">research/index.html</a>. Nineteen frames, one system: one green #16A34A, gold for merit and savings only, sky-blue for weather only, every ₦ the real U+20A6 glyph with separators, words wherever a tap has consequences, ≥48px targets, solid scrims on photos, place-first context lines. Sixteen light frames plus three dark ones (section 07) that reuse the light markup verbatim to prove dark mode is a token swap. <b>Photography:</b> every produce, market and portrait image here is a licensed-stock stand-in for the preview — production ships owned/licensed in-situ produce photography (the heap on the mat, the open sack, hands holding the yam), never stock, never picsum. The .ph-* gradients survive underneath each photo purely as the offline/failed-load fallback fill. v1 preserved at index-v1-backup.html.
 </footer>
 </div>
 
