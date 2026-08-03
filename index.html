@@ -329,6 +329,30 @@
   .screen.dark-scr .wc-grey{background:#252C23;color:var(--meta);border-color:var(--line)}
   .screen.dark-scr .seg{background:#252C23}
   .screen.dark-scr .sw2{background:#3A4237}
+
+  /* BrainBag: the AI assistant. Market Square rules, no chatbot cliches. */
+  .bbmark{width:34px;height:34px;border-radius:11px;background:var(--green);color:#fff;display:grid;place-items:center;flex-shrink:0}
+  .bbmark.sm{width:26px;height:26px;border-radius:9px}
+  .quota{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;background:var(--green-tint);border:1px solid var(--green-line);color:#0E7A36;font-size:12.5px;font-weight:700;white-space:nowrap}
+  .quota.low{background:var(--gold-tint);border-color:var(--gold-line);color:var(--gold-ink)}
+  .pcard{display:flex;align-items:center;gap:11px;min-height:56px;padding:12px 14px;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;font-size:15px;font-weight:600;color:var(--ink);line-height:1.35}
+  .pcard small{display:block;font-size:11.5px;font-weight:700;color:var(--meta);letter-spacing:.04em;margin-bottom:3px}
+  .think{display:inline-flex;gap:5px;align-items:center}
+  .think i{width:7px;height:7px;border-radius:50%;background:var(--meta);animation:tk 1.1s ease-in-out infinite}
+  .think i:nth-child(2){animation-delay:.16s}
+  .think i:nth-child(3){animation-delay:.32s}
+  @keyframes tk{0%,100%{opacity:.28;transform:translateY(0)}50%{opacity:.9;transform:translateY(-3px)}}
+  .bub.ai{background:var(--paper);border:1.5px solid var(--green-line);border-top-left-radius:6px;align-self:flex-start;max-width:92%}
+  .bub.ai b{display:block;margin-bottom:4px}
+  .bub.ai ol{margin:7px 0 0 17px;padding:0}
+  .bub.ai li{margin-bottom:7px;line-height:1.45}
+  .art{display:flex;gap:12px;align-items:center;padding:11px 0}
+  .art .ph{width:76px;height:60px;border-radius:11px;flex-shrink:0}
+  .art b{display:block;font-size:15px;font-weight:700;line-height:1.3;margin-bottom:3px}
+  .art small{font-size:12.5px;color:var(--meta);font-weight:500;display:block;line-height:1.35}
+  .sendbar{display:flex;align-items:center;gap:10px;padding:10px 18px 14px;border-top:1px solid var(--line);background:var(--canvas)}
+  .sendbtn{width:48px;height:48px;border-radius:14px;background:var(--green);color:#fff;display:grid;place-items:center;flex-shrink:0}
+  .sendbtn.off{background:var(--line);color:var(--meta)}
   .lbl{display:inline;white-space:inherit}
 </style>
 </head>
@@ -374,6 +398,7 @@
   <symbol id="i-bkmk" viewBox="0 0 24 24"><path d="M6.5 3.5h11V21L12 16.8 6.5 21V3.5z"/></symbol>
   <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c-2.6 2.5-3.8 5.4-3.8 8.5s1.2 6 3.8 8.5c2.6-2.5 3.8-5.4 3.8-8.5s-1.2-6-3.8-8.5z"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 2.8V6.5M16 2.8V6.5"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.3L19 10l-5.1 1.7L12 17l-1.9-5.3L5 10l5.1-1.7L12 3z"/><path d="M18.6 15.6l.6 1.8 1.8.6-1.8.6-.6 1.8-.6-1.8-1.8-.6 1.8-.6.6-1.8z"/></symbol>
   <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-2-1.4L14 21l-2-1.4L10 21l-2-1.4L6 21V3z"/><path d="M9 8h6M9 12h6"/></symbol>
 </svg>
 
@@ -1223,9 +1248,172 @@
   </div>
 </section>
 
-<!-- =============================== 07 · DARK MODE =============================== -->
+<!-- =============================== 07 . BRAINBAG =============================== -->
 <section class="flow">
-  <h2 class="d"><span class="no">07</span>Dark mode: the same screens, one token swap</h2>
+  <h2 class="d"><span class="no">07</span>BrainBag: an extension officer, not a chatbot</h2>
+  <p class="intro">BrainBag is Agrocom's AI help, designed against the endpoints already shipped in <code style="background:#2A2415;color:#A9DFAF;border-radius:4px;padding:1px 5px;font-size:12.5px">agrocom-api</code>: <b>GET /chat/init</b> returns the quota and the suggested prompts, <b>POST /chat/send</b> returns the reply and the new quota, <b>GET /learn</b> returns curated articles, <b>GET /history</b> groups past questions by date. Free accounts get <b>4 questions a day</b>; subscribers are unlimited. The design job is to stop an AI feature importing chatbot conventions: no dark glassy assistant panel, no typing-cursor theatre, no answer delivered as an undifferentiated wall of prose. The reply is <b>structured like advice you can act on this morning</b>, set in the same near-black 16px ink as the rest of the app.</p>
+  <p class="devi"><b>Design decisions:</b> the quota is stated before the first question rather than discovered at the fourth, because nothing on this board surprises you with a cost. The suggested prompts are real farm questions, taken from the seeded prompt set, so the empty state does work instead of asking "what can you do?". And the limit screen offers <b>tomorrow, free</b> as the first option: a farmer out of questions at 4pm is not a conversion opportunity.</p>
+  <div class="frames">
+
+    <!-- F17 . BrainBag home -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div class="fadeb" style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:10px 18px 14px">
+            <div class="r">
+              <div class="bbmark"><svg class="ic"><use href="#i-spark"/></svg></div>
+              <div style="flex:1;min-width:0">
+                <span class="d" style="font-size:22px;display:block;line-height:1.1">BrainBag</span>
+                <span class="m13" style="font-size:12.5px">Farm help by Agrocom</span>
+              </div>
+              <div class="rbtn"><svg class="ic"><use href="#i-book"/></svg></div>
+            </div>
+          </div>
+          <div style="flex:1;overflow:hidden;padding:16px 18px 0">
+            <span class="quota"><svg class="ic s"><use href="#i-check"/></svg>4 free questions today</span>
+            <div class="d" style="font-size:21px;line-height:1.25;margin-top:14px">Ask anything about your farm.</div>
+            <div class="m13" style="margin-top:6px;font-size:14px;line-height:1.45">Answers use your crop, your state and this season.</div>
+            <div class="m13" style="font-weight:700;margin-top:18px;margin-bottom:9px">START WITH</div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <span class="pcard"><svg class="ic" style="color:var(--green);flex-shrink:0"><use href="#i-spark"/></svg><span><small>SOIL MANAGEMENT</small>How can I improve soil quality on my farm?</span></span>
+              <span class="pcard"><svg class="ic" style="color:var(--green);flex-shrink:0"><use href="#i-spark"/></svg><span><small>PLANTING GUIDE</small>When should I plant tomatoes in Kano?</span></span>
+              <span class="pcard"><svg class="ic" style="color:var(--green);flex-shrink:0"><use href="#i-spark"/></svg><span><small>PEST MANAGEMENT</small>How do I manage pests without chemicals?</span></span>
+            </div>
+          </div>
+          <div class="sendbar">
+            <div class="inp" style="flex:1;height:48px">Ask BrainBag…</div>
+            <span class="sendbtn"><svg class="ic"><use href="#i-chevr"/></svg></span>
+          </div>
+        </div>
+        <div class="nav">
+          <a><svg class="ic"><use href="#i-home"/></svg>Home</a>
+          <a><svg class="ic"><use href="#i-shop"/></svg>Shop</a>
+          <span class="fabwrap"><span class="fab"><svg class="ic l"><use href="#i-plus"/></svg></span>Post</span>
+          <a class="on"><svg class="ic"><use href="#i-chat"/></svg>Chat</a>
+          <a><svg class="ic"><use href="#i-user"/></svg>Profile</a>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>BrainBag home</b>: quota stated up front, real farm questions as the empty state</div>
+    </div>
+
+    <!-- F18 . Answer -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:8px 18px 10px">
+            <div class="r">
+              <div class="rbtn"><svg class="ic"><use href="#i-back"/></svg></div>
+              <div class="bbmark sm"><svg class="ic s"><use href="#i-spark"/></svg></div>
+              <span class="d" style="font-size:18px;flex:1">BrainBag</span>
+              <span class="quota low">1 left today</span>
+            </div>
+          </div>
+          <div class="fadet" style="flex:1;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;padding:12px 16px 8px">
+            <span class="sysrow">Today</span>
+            <div class="bub out">Weevils are entering my maize in storage. What do I do?</div>
+            <div class="bub ai">
+              <b>Seal the grain, and the weevils die on their own.</b>
+              They need air to survive, so airtight storage settles it without chemicals.
+              <ol>
+                <li>Dry the maize until a grain cracks when you bite it.</li>
+                <li>Bag it in a hermetic storage bag. Press the air out before you tie both liners.</li>
+                <li>Keep the bags on a pallet, off the floor and away from the wall.</li>
+              </ol>
+            </div>
+            <div class="bub ai" style="padding:10px 12px">
+              <div class="r" style="gap:10px">
+                <div class="ph" style="width:46px;height:46px;border-radius:10px;overflow:hidden;flex-shrink:0"><img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=200&amp;h=160&amp;fit=crop&amp;q=80" alt="Dried maize"></div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:14px;font-weight:700;line-height:1.25">Storage bags, 100kg</div>
+                  <div class="pl" style="margin-top:2px"><span class="n d" style="font-size:16px"><span class="ng">₦</span>2,800</span><span class="uchip">/ bag</span></div>
+                </div>
+                <span class="b pri sm" style="height:40px;padding:0 15px;font-size:13.5px"><span class="lbl">View</span></span>
+              </div>
+            </div>
+            <div class="bub ai" style="padding:13px 15px"><span class="think"><i></i><i></i><i></i></span></div>
+          </div>
+          <div class="sendbar">
+            <div class="inp" style="flex:1;height:48px">Ask a follow-up…</div>
+            <span class="sendbtn"><svg class="ic"><use href="#i-chevr"/></svg></span>
+          </div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Answer</b>: numbered steps, and a real listing when the advice needs a product</div>
+    </div>
+
+    <!-- F19 . Learn -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div class="fadeb" style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:8px 18px 12px">
+            <div class="r"><div class="rbtn"><svg class="ic"><use href="#i-back"/></svg></div><span class="d" style="font-size:22px;flex:1">Learn</span></div>
+            <div class="chiprow rail" style="margin-top:11px"><span class="chip on">All</span><span class="chip">Soil</span><span class="chip">Water</span><span class="chip">Storage</span><span class="chip">Sustainability</span></div>
+          </div>
+          <div class="band" style="flex:1;padding:4px 18px">
+            <div class="art"><div class="ph"><img loading="lazy" src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=200&amp;h=160&amp;fit=crop&amp;q=80" alt="Maize field"></div><div style="flex:1;min-width:0"><b>Sustainable farming practices</b><small>Crop rotation, intercropping and organic fertilising.</small><span class="wc wc-grey" style="margin-top:6px">Sustainability, 6 min</span></div></div>
+            <div class="divider"></div>
+            <div class="art"><div class="ph"><img loading="lazy" src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200&amp;h=160&amp;fit=crop&amp;q=80" alt="Grain"></div><div style="flex:1;min-width:0"><b>Soil health management</b><small>pH, nutrients, and enriching soil naturally.</small><span class="wc wc-grey" style="margin-top:6px">Soil, 8 min</span></div></div>
+            <div class="divider"></div>
+            <div class="art"><div class="ph"><img loading="lazy" src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200&amp;h=160&amp;fit=crop&amp;q=80" alt="Tomatoes"></div><div style="flex:1;min-width:0"><b>Water management strategies</b><small>Drip irrigation, rainwater harvesting, mulching.</small><span class="wc wc-grey" style="margin-top:6px">Water, 5 min</span></div></div>
+            <div class="divider"></div>
+            <div class="art"><div class="ph"><img loading="lazy" src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=200&amp;h=160&amp;fit=crop&amp;q=80" alt="Maize"></div><div style="flex:1;min-width:0"><b>Storing maize without loss</b><small>Drying, hermetic bags, checking through the season.</small><span class="wc wc-gold" style="margin-top:6px">Most read this week</span></div></div>
+          </div>
+        </div>
+        <div class="nav">
+          <a><svg class="ic"><use href="#i-home"/></svg>Home</a>
+          <a><svg class="ic"><use href="#i-shop"/></svg>Shop</a>
+          <span class="fabwrap"><span class="fab"><svg class="ic l"><use href="#i-plus"/></svg></span>Post</span>
+          <a class="on"><svg class="ic"><use href="#i-chat"/></svg>Chat</a>
+          <a><svg class="ic"><use href="#i-user"/></svg>Profile</a>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Learn</b>: the curated set from GET /learn, always free, read time stated</div>
+    </div>
+
+    <!-- F20 . Out of questions -->
+    <div>
+      <div class="phone"><div class="screen"><div class="island"></div>
+        <div class="sb"><span>9:41</span><span class="sbr"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span><span class="bat"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+          <div class="band" style="border-top:0;padding:8px 18px 10px">
+            <div class="r">
+              <div class="rbtn"><svg class="ic"><use href="#i-back"/></svg></div>
+              <div class="bbmark sm"><svg class="ic s"><use href="#i-spark"/></svg></div>
+              <span class="d" style="font-size:18px;flex:1">BrainBag</span>
+            </div>
+          </div>
+          <div class="fadet" style="flex:1;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;padding:0 16px 8px">
+            <div class="bub ai">Space them 20cm apart and you will need roughly 25kg of seed for a hectare.</div>
+            <div class="bub out">And for the rice, how many bags per hectare?</div>
+            <div style="background:var(--gold-tint);border:1.5px solid var(--gold-line);border-radius:16px;padding:15px 16px">
+              <div class="d" style="font-size:17px;color:var(--gold-ink);line-height:1.3">That was your fourth question today.</div>
+              <div style="font-size:14.5px;color:var(--ink2);line-height:1.5;margin-top:7px">Your free questions reset at midnight. This chat stays here, so you can pick it up tomorrow.</div>
+              <div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">
+                <span class="b out" style="height:48px;font-size:15px"><span class="lbl">Remind me tomorrow</span></span>
+                <span class="b pri" style="height:48px;font-size:15px"><span class="lbl">Unlimited for <span class="ng">₦</span>1,500 a month</span></span>
+              </div>
+              <div class="m13" style="text-align:center;margin-top:10px;font-size:12.5px">Cancel any time.</div>
+            </div>
+            <div class="m13" style="text-align:center;padding:2px 0 4px">Or keep reading in <b style="color:var(--green)">Learn</b>, which is always free.</div>
+          </div>
+          <div class="sendbar">
+            <div class="inp" style="flex:1;height:48px;opacity:.55">Back at midnight…</div>
+            <span class="sendbtn off"><svg class="ic"><use href="#i-chevr"/></svg></span>
+          </div>
+        </div>
+      <div class="homebar"></div></div></div>
+      <div class="frame-label"><b>Out of questions</b>: free tomorrow is the first option, the paid tier second</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =============================== 08 · DARK MODE =============================== -->
+<section class="flow">
+  <h2 class="d"><span class="no">08</span>Dark mode: the same screens, one token swap</h2>
   <p class="intro">Agrocom is designed <b>light-first and only light-first</b>: the daytime job is a phone held at arm's length in Kano sun, and that job is won by warm off-white paper, near-black ink and solid scrims, not by a dark theme. Dark mode is therefore a <b>derived</b> mode, not a second design. It serves the other half of the day: evening price-checking after the market closes, chat with a buyer at night, and the battery an OLED screen gives back when most of it is off. The three frames below are the <b>same markup</b> as the Shop home (section 02), the Product page (section 03) and the Wallet (section 05), copied verbatim, nothing re-laid out, no component forked. A single <code style="background:#2A2415;color:#A9DFAF;border-radius:4px;padding:1px 5px;font-size:12.5px">.dark-scr</code> class on the screen element re-maps the surface, ink, line and tint custom properties and stops there.</p>
   <p class="devi"><b>What deliberately does <em>not</em> move:</b> the one green <b>#16A34A</b> is byte-identical in both modes, it clears 5.1:1 as text on the dark paper, so every link, "✓ Verified", nav-active label and CTA fill keeps the brand exactly where it is. Ink 16.5:1, secondary 10.8:1, metadata still 7.3:1, the sunlight contrast floor survives the swap. Photographs are untouched: they carry their own light, so only the <b>scrims strengthen</b> (.82 → .90 alpha) because the images now read brighter against a black surround.</p>
   <div class="frames">
